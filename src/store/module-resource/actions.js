@@ -15,14 +15,25 @@ export async function getItemList(context, query) {
   }
 }
 
-export function addItem(context, jsonurl) {
-  resource.fetchJson(jsonurl)
-  .then(res => res.json()
-  .then(json => {
-    context.commit('SET_FORM_FIELDS', json)
-    console.log(json);
+export async function addItem(context, jsonurl) {
+  
+    return await resource.fetchJson(jsonurl)
+      .then(res => {
+          res.json()
+         .then(json => {
+           context.commit('SET_FORM_FIELDS', json);
+           console.log('addItemAction(store)', json);
+         })
+      })
+
+  // return resource.fetchJson(jsonurl)
+  // .then(res => res.json()
+  // .then(json => {
+  //   context.commit('SET_FORM_FIELDS', json);
+  //   // context.commit('SET_ADDITEM_DIALOG');
+  //   console.log(json);
     
-  })
-  )
+  // })
+  // )
     
 }

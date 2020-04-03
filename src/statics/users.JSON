@@ -4,5 +4,11 @@
         "type": "text",
         "label": "Ad soyad",
         "icon": "people"
+    },
+    {
+        "name": "email",
+        "type": "email",
+        "label": "E-Posta Adresi",
+        "icon": "mail"
     }
 ]

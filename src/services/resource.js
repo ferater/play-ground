@@ -11,6 +11,6 @@ export default {
 
 
     fetchJson(jsonurl) {
-      return fetch('statics' + jsonurl + '.json')
+      return fetch('statics' + jsonurl + '.json');
     }
 }

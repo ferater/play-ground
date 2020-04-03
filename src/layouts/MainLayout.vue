@@ -79,7 +79,7 @@
             no-caps
             label="Yeni ..."
             class="q-ml-sm q-px-md"
-            @click="addItem('/users')"
+            @click="resourceItem"
           />
 
           <q-space />
@@ -197,34 +197,54 @@
         </div>
       </q-page-sticky>
     </q-page-container>
-    <div>
-      <q-input
-        square
-        clearable
-        bottom-slots
-        v-for="field in fields"
-        :key="field.name"
-        :type="field.type"
-        :label="field.label"
-      >
-        <template v-slot:prepend>
-          <q-icon :name="field.icon" />
-        </template>
-      </q-input>
-    </div>
+
+    <q-dialog v-model="resourceDialog" position="right">
+      <q-card class="resource-form">
+        <q-toolbar>
+          <q-toolbar-title class="resource-dialog-title">
+            Yeni Kullanıcı Oluştur
+          </q-toolbar-title>
+          <!-- <q-space />
+          <q-btn flat round dense icon="close" v-close-popup /> -->
+        </q-toolbar>
+        <q-card-section class="">
+          <q-input
+            square
+            clearable
+            bottom-slots
+            v-for="field in fields"
+            :key="field.name"
+            :type="field.type"
+            :label="field.label"
+          >
+            <template v-slot:prepend>
+              <q-icon :name="field.icon" />
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn flat color="primary" label="İptal" />
+          <q-btn @click.prevent="handleSubmit" color="primary" label="Kaydet" />
+         
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
 
 <script>
 import routes from "../router/routes";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "GooglePhotosLayout",
   data() {
     return {
       routes,
-      fields: [],
       leftDrawerOpen: false,
+      resourceDialog: true,
       search: "",
       storage: 0.26,
       links1: [
@@ -256,6 +276,26 @@ export default {
   methods: {
     ...mapActions("resource", {
       addItem: "addItem"
+    }),
+    resourceItem() {
+      this.addItem("/users")
+        .then(res => {
+          this.resourceDialog = true;
+          console.log("resourceDialog : Dialog opened");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    handleSubmit() {
+      console.log('handleSubmit');
+      // this.addItemDialog = false;
+    }
+  },
+  computed: {
+    ...mapState({
+      fields: state => state.resource.fields,
+      addItemDialog: state => state.resource.addItemDialog
     })
   }
   // mounted() {}
@@ -288,9 +328,28 @@ export default {
   height: 330px;
   border-radius: 0 5px 5px 0;
   background-color: #fff;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 20px -10px rgba(76,175,80,.28),0 4px 20px 0 rgba(0,0,0,.12),0 7px 8px -5px rgba(76,175,80,.2)
   transition: all 0.1s ease;
 }
+
+.resource-form
+  width 350px
+
+.q-dialog__inner > div
+  overflow visible
+
+.resource-dialog-title
+  position: absolute;
+  top: -15px;
+  width: 70%;
+  height: 50px;
+  border-radius: 3px;
+  box-shadow: 0 4px 5px 0 #4ebb5a99;
+  background: $baslik
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color #fff
 
 .GPL {
   &__page-container {
