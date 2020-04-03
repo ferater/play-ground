@@ -201,8 +201,8 @@
     <q-dialog v-model="resourceDialog" position="right">
       <q-card class="resource-form">
         <q-toolbar>
-          <q-toolbar-title class="resource-dialog-title">
-            Yeni Kullanıcı Oluştur
+          <q-toolbar-title class="card-form-title">
+            {{ $t('resourceForm.'+ fields.title) }}
           </q-toolbar-title>
           <!-- <q-space />
           <q-btn flat round dense icon="close" v-close-popup /> -->
@@ -212,7 +212,7 @@
             square
             clearable
             bottom-slots
-            v-for="field in fields"
+            v-for="field in fields.form"
             :key="field.name"
             :type="field.type"
             :label="field.label"
@@ -316,7 +316,7 @@ export default {
 .my-header {
   top: 20px;
   right: 15px;
-  left: 190px;
+  left: 195px;
   box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.12);
   border-radius: 5px;
   background-color: #fff;
@@ -328,7 +328,7 @@ export default {
   height: 330px;
   border-radius: 0 5px 5px 0;
   background-color: #fff;
-  box-shadow: 0 12px 20px -10px rgba(76,175,80,.28),0 4px 20px 0 rgba(0,0,0,.12),0 7px 8px -5px rgba(76,175,80,.2)
+  box-shadow: 0 8px 10px -10px rgba(0,0,0,.28),0 4px 20px 0 rgba(0,0,0,.12),0 7px 8px -5px rgba(76,175,80,.2)
   transition: all 0.1s ease;
 }
 
@@ -338,18 +338,23 @@ export default {
 .q-dialog__inner > div
   overflow visible
 
-.resource-dialog-title
+.card-form-title
   position: absolute;
   top: -15px;
-  width: 70%;
   height: 50px;
   border-radius: 3px;
-  box-shadow: 0 4px 5px 0 #4ebb5a99;
-  background: $baslik
+  box-shadow: 2px 4px 6px 1px $cardTitleShadow;
+  background: $cardTitle
+  padding 0 10px!important
   display: flex;
   justify-content: center;
   align-items: center;
   color #fff
+  font-family -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+  font-weight bold
+
+.q-dialog__backdrop
+  background-color rgba(0, 0, 0, 0.8)
 
 .GPL {
   &__page-container {
@@ -404,23 +409,18 @@ export default {
 
   @media (min-width: 1024px) {
     &__page-container {
-      padding-top: 90px;
+      padding-top: 110px!important;
       padding-left: 176px;
     }
   }
 }
 
 @media (max-width: 1023px) {
-  .myhead {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    height: 83px;
-    background-color: #fafafaf2;
-    z-index: 9;
+  .GPL{
+    &__page-container {
+      padding-top 110px!important
+    }
   }
-
   .my-header {
     top: 20px;
     right: 15px;

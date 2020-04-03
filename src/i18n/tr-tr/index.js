@@ -3,5 +3,8 @@ export default {
         home: 'Anasayfa',
         users: 'Kullanıcılar',
         products: 'Ürünler',
+    },
+    resourceForm: {
+        addUser: "Kullanıcı Ekle"
     }
 }

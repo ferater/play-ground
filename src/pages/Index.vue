@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="q-pa-md row items-start q-gutter-md">
-      <q-card class="my-card">
+      <!-- <q-card class="my-card">
         <img src="https://cdn.quasar.dev/img/mountains.jpg" />
 
         <q-card-section>
@@ -67,7 +67,7 @@
           <q-btn flat>Action 1</q-btn>
           <q-btn flat>Action 2</q-btn>
         </q-card-actions>
-      </q-card>
+      </q-card> -->
     </div>
   </q-page>
 </template>

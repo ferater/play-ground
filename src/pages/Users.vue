@@ -1,42 +1,23 @@
 <template>
   <q-page padding>
-    <q-table
-      title="Kullanıcılar"
-      :data="items"
-      :columns="columns"
-      :filter="filter"
-      row-key="name"
-      selection="single"
-      :selected.sync="selected"
-    >
-      <template v-slot:top>
-        <div>
-          <!-- <q-btn
-          dense
-          icon="add_circle"
-          size="14px"
-          color="white"
-          text-color="primary"
-          label="...Oluştur"
-          @click="addItem"
-        >
-        <q-tooltip
-            content-class="bg-amber text-black shadow-4"
-            :offset="[5, 5]"
-          >
-            {{ $t('dynamicTable.addToolTip') }}
-          </q-tooltip>
-          </q-btn>-->
-        </div>
-        <q-space />
-        <q-input  v-if="!$q.screen.gt.xs" borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-    </q-table>
-
+    <q-card>
+      <q-toolbar>
+        <q-toolbar-title class="card-form-title">
+          <q-icon name="people"></q-icon>
+          <span style="margin-left:5px">Kullanıcılar</span>
+        </q-toolbar-title>
+        <!-- <q-space />
+        <q-btn flat round dense icon="close" v-close-popup />-->
+      </q-toolbar>
+      <q-table
+        :data="items"
+        :columns="columns"
+        :filter="filter"
+        row-key="name"
+        selection="single"
+        :selected.sync="selected"
+      ></q-table>
+    </q-card>
     <div v-if="selected.length > 0" class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div>
   </q-page>
 </template>
@@ -49,6 +30,7 @@ export default {
     return {
       url: "users",
       /*** Tablo */
+      tableTitle: "Kullanıcılar",
       filter: "",
       selected: [],
       columns: [
@@ -97,3 +79,5 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus"></style>
