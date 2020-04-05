@@ -5,6 +5,7 @@ export default {
         products: 'Ürünler',
     },
     resourceForm: {
-        addUser: "Kullanıcı Ekle"
+        addUser: "Kullanıcı Ekle",
+        addProduct: "Ürün Ekle"
     }
 }

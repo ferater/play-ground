@@ -4,8 +4,25 @@ export default {
     getItemList(query) {
         return axios({
             method: 'get',
-            url: query.url,
+            url: '/api' + query.url,
             params: query.params
+        })
+    },
+
+
+    storeItem(query) {
+        return axios({
+            method: 'post',
+            url: '/api' + query.url,
+            data: query.data
+        })
+    },
+
+
+    deleteItem(query) {
+        return axios({
+            method: 'delete',
+            url: '/api' + query.url + '/' + query.id,
         })
     },
 

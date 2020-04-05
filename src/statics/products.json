@@ -1,0 +1,27 @@
+{
+    "title": "addProduct",
+  "form": [
+    {
+      "name": "code",
+      "type": "text",
+      "label": "Ürün Kodu",
+      "icon": "code",
+      "clearable": true,
+      "autofocus": true
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "label": "Ürün Adı",
+      "icon": "dns",
+      "clearable": true
+    },
+    {
+      "name": "price",
+      "type": "number",
+      "label": "Ürün Fiyatı",
+      "icon": "local_offer",
+      "clearable": false
+    }
+  ]
+}

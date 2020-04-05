@@ -48,7 +48,10 @@ module.exports = function (ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'Dialog',
+        'Notify'
+      ]
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -58,7 +61,7 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       env: {
-        BASE_URL: JSON.stringify('https://jsonplaceholder.typicode.com'),
+        BASE_URL: JSON.stringify('http://automation.test:8000'),
       },
       // devtool: 'source-map',
       // rtl: false, // https://quasar.dev/options/rtl-support

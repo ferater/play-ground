@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title class="card-form-title">
           <q-icon name="people"></q-icon>
-          <span style="margin-left:5px">Kullanıcılar</span>
+          <span style="margin-left:5px">{{ tableTitle }}</span>
         </q-toolbar-title>
         <!-- <q-space />
         <q-btn flat round dense icon="close" v-close-popup />-->
@@ -28,7 +28,6 @@ export default {
   name: "PageUsers",
   data() {
     return {
-      url: "users",
       /*** Tablo */
       tableTitle: "Kullanıcılar",
       filter: "",
@@ -64,9 +63,6 @@ export default {
     ...mapActions("resource", {
       getItemList: "getItemList"
     }),
-    addItem() {
-      alert("Yeni ...");
-    }
   },
   computed: {
     ...mapState({
@@ -75,7 +71,7 @@ export default {
     })
   },
   created() {
-    this.getItemList({ url: this.url });
+    this.getItemList({ url: this.$route.path });
   }
 };
 </script>

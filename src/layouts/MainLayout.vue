@@ -14,8 +14,8 @@
           />
 
           <q-toolbar-title v-if="$q.screen.gt.sm" shrink class="row items-center no-wrap">
-            <img src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg" />
-            <span class="q-ml-sm">Photos</span>
+            <!-- <img src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg" /> -->
+            <span class="q-ml-sm">Otomasyon</span>
           </q-toolbar-title>
 
           <q-space />
@@ -68,20 +68,46 @@
               </q-list>
             </q-menu>
           </q-btn>-->
-
-          <q-btn
-            v-if="$q.screen.gt.xs"
-            flat
-            dense
-            no-wrap
-            color="primary"
-            icon="add_circle"
-            no-caps
-            label="Yeni ..."
-            class="q-ml-sm q-px-md"
-            @click="resourceItem"
-          />
-
+          <div v-if="isEmptyObject(selectedItem)" class="q-ml-md scale-up-ver-center">
+            <q-btn
+              dense
+              icon="add_circle"
+              size="14px"
+              color="white"
+              text-color="secondary"
+              class="q-ml-sm q-px-xs"
+              @click="showResourceForm($route.path)"
+            >
+              <q-tooltip
+                content-class="bg-amber text-black shadow-4"
+                :offset="[5, 5]"
+              >Yeni ... Oluştur</q-tooltip>
+            </q-btn>
+          </div>
+          <div v-if="!isEmptyObject(selectedItem)" class="q-ml-md scale-up-center">
+            <q-btn
+              class="q-px-xs q-mx-xs"
+              dense
+              color="white"
+              text-color="deep-orange"
+              icon="remove_red_eye"
+            >
+              <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Detayları Gör</q-tooltip>
+            </q-btn>
+            <q-btn class="q-px-xs q-mx-xs" dense color="white" text-color="deep-orange" icon="edit">
+              <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Düzenle</q-tooltip>
+            </q-btn>
+            <q-btn
+              class="q-px-xs q-mx-xs"
+              dense
+              color="white"
+              text-color="deep-orange"
+              icon="delete"
+              @click="showConfirmPopup"
+            >
+              <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Sil</q-tooltip>
+            </q-btn>
+          </div>
           <q-space />
 
           <div class="q-gutter-sm row items-center no-wrap">
@@ -192,46 +218,88 @@
             class="GPL__side-btn"
           >
             <q-icon size="22px" :name="route.meta.icon" />
-            <div class="GPL__side-btn__label">{{ $t('routes.' + route.meta.label) }}</div>
+            <div class="GPL__side-btn__label">{{ $t("routes." + route.meta.label) }}</div>
           </q-btn>
         </div>
       </q-page-sticky>
     </q-page-container>
 
-    <q-dialog v-model="resourceDialog" position="right">
+    <!-- Form dialog -->
+    <q-dialog v-model="resourceDialog" persistent position="right" @escape-key="cleanResourceForm">
       <q-card class="resource-form">
         <q-toolbar>
           <q-toolbar-title class="card-form-title">
-            {{ $t('resourceForm.'+ fields.title) }}
+            {{
+            $t("resourceForm." + fields.title)
+            }}
           </q-toolbar-title>
           <!-- <q-space />
-          <q-btn flat round dense icon="close" v-close-popup /> -->
+          <q-btn flat round dense icon="close" v-close-popup />-->
         </q-toolbar>
-        <q-card-section class="">
+        <q-card-section class>
           <q-input
             square
-            clearable
             bottom-slots
             v-for="field in fields.form"
+            v-model="data[field.name]"
             :key="field.name"
             :type="field.type"
             :label="field.label"
+            :disable="btnLoading"
+            :autofocus="field.autofocus"
+            :clearable="field.clearable"
           >
             <template v-slot:prepend>
               <q-icon :name="field.icon" />
             </template>
           </q-input>
         </q-card-section>
-
         <q-separator />
-
         <q-card-actions align="right">
-          <q-btn flat color="primary" label="İptal" />
-          <q-btn @click.prevent="handleSubmit" color="primary" label="Kaydet" />
-         
+          <q-btn
+            @click.prevent="cleanResourceForm"
+            color="primary"
+            label="İptal"
+            :disable="btnLoading"
+          />
+          <q-btn
+            @click.prevent="handleSubmit"
+            color="primary"
+            label="Kaydet"
+            :loading="btnLoading"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- /Form dialog -->
+
+    <!-- Silme onay -->
+    <q-dialog v-model="confirm" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="priority_high" color="negative" text-color="white" />
+          <span class="q-ml-sm">
+            Seçilen ürün
+            <b>
+              <i>
+                <u>{{ selectedItem.name }}</u>
+              </i>
+            </b> silinecek, bu işlem geri alınamaz!
+          </span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="İptal" :disable="btnLoading" color="secondary" v-close-popup />
+          <q-btn
+            flat
+            label="Onaylıyorum"
+            color="negative"
+            @click="deleteSelectedItem"
+            :loading="btnLoading"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <!-- /silme onay -->
   </q-layout>
 </template>
 
@@ -242,9 +310,13 @@ export default {
   name: "GooglePhotosLayout",
   data() {
     return {
+      url: this.$route.path,
+      confirm: false,
+      btnLoading: false,
+      data: {},
       routes,
+      // resourceDialog: false,
       leftDrawerOpen: false,
-      resourceDialog: true,
       search: "",
       storage: 0.26,
       links1: [
@@ -275,27 +347,93 @@ export default {
   },
   methods: {
     ...mapActions("resource", {
-      addItem: "addItem"
+      showResourceForm: "showResourceForm",
+      hideResourceForm: "hideResourceForm",
+      storeItem: "storeItem",
+      deleteItem: "deleteItem"
     }),
-    resourceItem() {
-      this.addItem("/users")
-        .then(res => {
-          this.resourceDialog = true;
-          console.log("resourceDialog : Dialog opened");
-        })
-        .catch(err => {
-          console.log(err);
-        });
+
+    /*** Resource Form Temizle*/
+    cleanResourceForm() {
+      this.hideResourceForm(false);
+      this.data = Object.assign({});
+      console.log("cleanResourceForm: Form Temizlendi");
     },
+    /*** /Resource Form Temizle*/
+
+    /*** Form Gönder */
     handleSubmit() {
-      console.log('handleSubmit');
-      // this.addItemDialog = false;
+      this.btnLoading = true;
+      this.storeItem({ url: this.$route.path, data: this.data }).then(resp => {
+        setTimeout(() => {
+          this.btnLoading = false;
+          this.showNotify("Yeni ürün başarıyla oluşturuldu", "positive");
+          this.cleanResourceForm();
+        }, 500);
+        this.data = Object.assign({});
+      })
+      .catch(err => {
+        setTimeout(() => {
+          this.btnLoading = false;
+          this.cleanResourceForm();
+          this.showNotify([err.response.status + ": ", err.response.statusText], "negative");
+        }, 500);
+        console.log('handleSubmit(catch): ', err.response);
+      });
+    },
+    /*** /Form Gönder */
+
+    /*** Seçilen İtemi Sil */
+    deleteSelectedItem() {
+      this.btnLoading = true;
+      this.deleteItem({ url: this.url, id: this.selectedItem.id }).then(() => {
+        setTimeout(() => {
+          this.btnLoading = false;
+          this.hideConfirmPopup();
+          this.showNotify("Ürün Silindi", "positive");
+        }, 500);
+        console.log("deleteSelectedItem: Silindi iştee");
+      });
+    },
+    showConfirmPopup() {
+      this.confirm = true;
+    },
+    hideConfirmPopup() {
+      this.confirm = false;
+    },
+    /*** Seçilen İtemi Sil */
+
+    /*** Mesaj Göster */
+    showNotify(message, type, label = "Tamam") {
+      this.$q.notify({
+        message: message,
+        type: type,
+        actions: [
+          {
+            label: label,
+            color: "white",
+            handler: () => {}
+          }
+        ]
+      });
+    },
+    /*** /Mesaj Göster */
+
+    /*** Obje Dolu mu diye bak...(Dışarı Taşınacak) */
+    isEmptyObject(object) {
+      if (Object.keys(object).length == 0) {
+        return true;
+      }
+      return false;
     }
+    /*** /Obje Dolu mu diye bak */
   },
   computed: {
     ...mapState({
       fields: state => state.resource.fields,
-      addItemDialog: state => state.resource.addItemDialog
+      selectedItem: state => state.resource.selectedItem,
+      // btnLoading: state => state.resource.btnLoading,
+      resourceDialog: state => state.resource.resourceDialog
     })
   }
   // mounted() {}
@@ -328,33 +466,37 @@ export default {
   height: 330px;
   border-radius: 0 5px 5px 0;
   background-color: #fff;
-  box-shadow: 0 8px 10px -10px rgba(0,0,0,.28),0 4px 20px 0 rgba(0,0,0,.12),0 7px 8px -5px rgba(76,175,80,.2)
+  box-shadow: 0 8px 10px -10px rgba(0, 0, 0, 0.28), 0 4px 20px 0 rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(76, 175, 80, 0.2);
   transition: all 0.1s ease;
 }
 
-.resource-form
-  width 350px
+.resource-form {
+  width: 350px;
+}
 
-.q-dialog__inner > div
-  overflow visible
+.q-dialog__inner > div {
+  overflow: visible;
+}
 
-.card-form-title
+.card-form-title {
   position: absolute;
   top: -15px;
   height: 50px;
   border-radius: 3px;
   box-shadow: 2px 4px 6px 1px $cardTitleShadow;
-  background: $cardTitle
-  padding 0 10px!important
+  background: $cardTitle;
+  padding: 0 10px !important;
   display: flex;
   justify-content: center;
   align-items: center;
-  color #fff
-  font-family -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
-  font-weight bold
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: bold;
+}
 
-.q-dialog__backdrop
-  background-color rgba(0, 0, 0, 0.8)
+.q-dialog__backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
 
 .GPL {
   &__page-container {
@@ -409,18 +551,19 @@ export default {
 
   @media (min-width: 1024px) {
     &__page-container {
-      padding-top: 110px!important;
+      padding-top: 110px !important;
       padding-left: 176px;
     }
   }
 }
 
 @media (max-width: 1023px) {
-  .GPL{
+  .GPL {
     &__page-container {
-      padding-top 110px!important
+      padding-top: 110px !important;
     }
   }
+
   .my-header {
     top: 20px;
     right: 15px;
@@ -429,6 +572,164 @@ export default {
     border-radius: 5px;
     background-color: #fff;
     transition: all 0.5s ease;
+  }
+}
+
+/* *********** */
+.scale-up-hor-left {
+  -webkit-animation: scale-up-hor-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  animation: scale-up-hor-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+.slide-left {
+  -webkit-animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.scale-up-ver-center {
+  -webkit-animation: scale-up-ver-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  animation: scale-up-ver-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+.scale-up-center {
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-4-4 16:15:10
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info.
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+/**
+ * ----------------------------------------
+ * animation scale-up-hor-left
+ * ----------------------------------------
+ */
+@keyframes scale-up-hor-left {
+  0% {
+    -webkit-transform: scaleX(0.4);
+    transform: scaleX(0.4);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+  }
+
+  100% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+  }
+}
+
+@keyframes scale-up-hor-left {
+  0% {
+    -webkit-transform: scaleX(0.4);
+    transform: scaleX(0.4);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+  }
+
+  100% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+  }
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-4-4 17:38:7
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info.
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+/**
+ * ----------------------------------------
+ * animation slide-left
+ * ----------------------------------------
+ */
+@keyframes slide-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  100% {
+    -webkit-transform: translateX(-100px);
+    transform: translateX(-100px);
+  }
+}
+
+@keyframes slide-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  100% {
+    -webkit-transform: translateX(-100px);
+    transform: translateX(-100px);
+  }
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-4-5 13:49:11
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info.
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+/**
+ * ----------------------------------------
+ * animation scale-up-ver-center
+ * ----------------------------------------
+ */
+@keyframes scale-up-ver-center {
+  0% {
+    -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+  }
+}
+
+@keyframes scale-up-ver-center {
+  0% {
+    -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+  }
+}
+
+@keyframes scale-up-ver-center {
+  0% {
+    -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+  }
+}
+
+@keyframes scale-up-center {
+  0% {
+    -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+  }
+
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
   }
 }
 </style>
