@@ -1,5 +1,5 @@
 {
-    "title": "addProduct",
+  "title": "addProduct",
   "form": [
     {
       "name": "code",

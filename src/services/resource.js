@@ -19,6 +19,15 @@ export default {
     },
 
 
+    updateItem(query) {
+        return axios({
+            method: 'put',
+            url: '/api' + query.url + '/' + query.data.id,
+            data: query.data
+        })
+    },
+
+
     deleteItem(query) {
         return axios({
             method: 'delete',

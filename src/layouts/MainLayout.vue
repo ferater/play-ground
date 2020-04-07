@@ -76,7 +76,7 @@
               color="white"
               text-color="secondary"
               class="q-ml-sm q-px-xs"
-              @click="showResourceForm($route.path)"
+              @click="showResourceForm(url)"
             >
               <q-tooltip
                 content-class="bg-amber text-black shadow-4"
@@ -94,7 +94,14 @@
             >
               <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Detayları Gör</q-tooltip>
             </q-btn>
-            <q-btn class="q-px-xs q-mx-xs" dense color="white" text-color="deep-orange" icon="edit">
+            <q-btn
+              class="q-px-xs q-mx-xs"
+              dense
+              color="white"
+              text-color="deep-orange"
+              icon="edit"
+              @click="showEditForm"
+            >
               <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Düzenle</q-tooltip>
             </q-btn>
             <q-btn
@@ -103,7 +110,7 @@
               color="white"
               text-color="deep-orange"
               icon="delete"
-              @click="showConfirmPopup"
+              @click="showDeleteConfirmPopup"
             >
               <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Sil</q-tooltip>
             </q-btn>
@@ -228,11 +235,7 @@
     <q-dialog v-model="resourceDialog" persistent position="right" @escape-key="cleanResourceForm">
       <q-card class="resource-form">
         <q-toolbar>
-          <q-toolbar-title class="card-form-title">
-            {{
-            $t("resourceForm." + fields.title)
-            }}
-          </q-toolbar-title>
+          <q-toolbar-title class="card-form-title">{{ $t("resourceForm." + fields.title) }}</q-toolbar-title>
           <!-- <q-space />
           <q-btn flat round dense icon="close" v-close-popup />-->
         </q-toolbar>
@@ -284,7 +287,8 @@
               <i>
                 <u>{{ selectedItem.name }}</u>
               </i>
-            </b> silinecek, bu işlem geri alınamaz!
+            </b>
+            silinecek, bu işlem geri alınamaz!
           </span>
         </q-card-section>
         <q-card-actions align="right">
@@ -348,14 +352,22 @@ export default {
   methods: {
     ...mapActions("resource", {
       showResourceForm: "showResourceForm",
-      hideResourceForm: "hideResourceForm",
+      toggleResourceForm: "toggleResourceForm",
       storeItem: "storeItem",
+      updateItem: "updateItem",
       deleteItem: "deleteItem"
     }),
 
+    /*** Düzenle Formu Aç */
+    showEditForm() {
+      this.showResourceForm(this.url);
+      Object.assign(this.data, this.selectedItem);
+    },
+    /*** /Düzenle Formu Aç */
+
     /*** Resource Form Temizle*/
     cleanResourceForm() {
-      this.hideResourceForm(false);
+      this.toggleResourceForm(false);
       this.data = Object.assign({});
       console.log("cleanResourceForm: Form Temizlendi");
     },
@@ -363,23 +375,49 @@ export default {
 
     /*** Form Gönder */
     handleSubmit() {
-      this.btnLoading = true;
-      this.storeItem({ url: this.$route.path, data: this.data }).then(resp => {
-        setTimeout(() => {
-          this.btnLoading = false;
-          this.showNotify("Yeni ürün başarıyla oluşturuldu", "positive");
-          this.cleanResourceForm();
-        }, 500);
-        this.data = Object.assign({});
-      })
-      .catch(err => {
-        setTimeout(() => {
-          this.btnLoading = false;
-          this.cleanResourceForm();
-          this.showNotify([err.response.status + ": ", err.response.statusText], "negative");
-        }, 500);
-        console.log('handleSubmit(catch): ', err.response);
-      });
+      if (this.data.id) {
+        this.btnLoading = true;
+        this.updateItem({ url: this.url, data: this.data })
+          .then(() => {
+            setTimeout(() => {
+              this.btnLoading = false;
+              this.showNotify(this.notifyMessage, this.notifyType);
+              this.cleanResourceForm();
+            }, 500);
+          })
+          .catch(err => {
+            setTimeout(() => {
+              this.btnLoading = false;
+              this.showNotify(
+                [err.response.status + ": ", err.response.statusText],
+                "negative"
+              );
+              this.cleanResourceForm();
+            }, 500);
+            console.log("handleSubmit(catch): ", err.response);
+          });
+      } else {
+        this.btnLoading = true;
+        this.storeItem({ url: this.url, data: this.data })
+          .then(() => {
+            setTimeout(() => {
+              this.btnLoading = false;
+              this.showNotify(this.notifyMessage, this.notifyType);
+              this.cleanResourceForm();
+            }, 500);
+          })
+          .catch(err => {
+            setTimeout(() => {
+              this.btnLoading = false;
+              this.showNotify(
+                [err.response.status + ": ", err.response.statusText],
+                "negative"
+              );
+              this.cleanResourceForm();
+            }, 500);
+            console.log("handleSubmit(catch): ", err.response);
+          });
+      }
     },
     /*** /Form Gönder */
 
@@ -390,12 +428,12 @@ export default {
         setTimeout(() => {
           this.btnLoading = false;
           this.hideConfirmPopup();
-          this.showNotify("Ürün Silindi", "positive");
+           this.showNotify(this.notifyMessage, this.notifyType);
         }, 500);
         console.log("deleteSelectedItem: Silindi iştee");
       });
     },
-    showConfirmPopup() {
+    showDeleteConfirmPopup() {
       this.confirm = true;
     },
     hideConfirmPopup() {
@@ -432,8 +470,9 @@ export default {
     ...mapState({
       fields: state => state.resource.fields,
       selectedItem: state => state.resource.selectedItem,
-      // btnLoading: state => state.resource.btnLoading,
-      resourceDialog: state => state.resource.resourceDialog
+      resourceDialog: state => state.resource.resourceDialog,
+      notifyMessage: state => state.resource.notifyMessage,
+      notifyType: state => state.resource.notifyType,
     })
   }
   // mounted() {}

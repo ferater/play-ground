@@ -26,3 +26,8 @@ export function SET_FORM_FIELDS(state, payload) {
 export function SET_RESOURCEDIALOG(state, payload) {
   state.resourceDialog = payload;
 }
+
+export function SET_NOTIFY(state, payload) {
+  state.notifyMessage = payload.res.data;
+  state.notifyType = payload.type;
+}

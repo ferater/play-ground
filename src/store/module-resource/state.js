@@ -4,5 +4,7 @@ export default function () {
    selectedItem: {},
    fields: {},
    resourceDialog: false,
+   notifyMessage: "",
+   notifyType: "",
   }
 }
