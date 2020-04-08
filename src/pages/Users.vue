@@ -13,7 +13,7 @@
         :data="items"
         :columns="columns"
         :filter="filter"
-        row-key="name"
+        row-key="id"
         selection="single"
         :selected.sync="selected"
       ></q-table>
@@ -43,17 +43,17 @@ export default {
           sortable: true
         },
         {
-          name: "username",
-          align: "left",
-          label: "Kullanıcı Adı",
-          field: "username",
-          sortable: true
-        },
-        {
           name: "email",
           align: "left",
           label: "E-Posta",
           field: "email",
+          sortable: true
+        },
+        {
+          name: "address",
+          align: "left",
+          label: "Bağlantı",
+          field: row => row.address.street,
           sortable: true
         }
       ]

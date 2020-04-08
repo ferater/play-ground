@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // import example from './module-example'
+import auth from './module-auth';
+import options from './module-options';
 import resource from './module-resource';
 
 Vue.use(Vuex)
@@ -19,6 +21,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       // example
+      auth,
+      options,
       resource,
     },
 

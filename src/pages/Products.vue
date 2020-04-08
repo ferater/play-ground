@@ -1,57 +1,22 @@
 <template>
   <q-page padding>
-    <q-card>
-      <q-toolbar>
-        <q-toolbar-title class="card-form-title">
-          <q-icon name="people"></q-icon>
-          <span style="margin-left:5px">{{ tableTitle }}</span>
-        </q-toolbar-title>
-        <!-- <q-space />
-        <q-btn flat round dense icon="close" v-close-popup />-->
-      </q-toolbar>
-      <q-table
-        :data="items"
-        :columns="columns"
-        :filter="filter"
-        :pagination.sync="pagination"
-        :selected.sync="selected"
-        @selection="selectRow"
-        row-key="id"
-        selection="single"
-      >
-        <template v-slot:body="props">
-          <q-tr
-            :props="props"
-            :class="'cursor-pointer'"
-            @click.native="props.selected = !props.selected"
-          >
-            <q-td auto-width>
-              <q-checkbox v-if="selectionCheckBox" v-model="props.selected" color="deep-orange" />
-            </q-td>
-            <q-td v-for="col in props.cols" :key="col.name" :props="props">
-              <span>{{ col.value }}</span>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
-    </q-card>
-    <div v-if="selected.length > 0" class="q-mt-md">Selected: {{ JSON.stringify(selected) }}</div>
+    <dynamic-table :data="items" :columns="columns" :tableTitle="tableTitle" />
   </q-page>
 </template>
 
 <script>
+import DynamicTable from "../components/DynamicTable";
 import { mapActions, mapState } from "vuex";
 export default {
   name: "PageProducts",
+  components: {
+    DynamicTable
+  },
   data() {
     return {
       url: this.$route.path,
       /*** Tablo */
       tableTitle: "Ürünler",
-      filter: "",
-      selectionCheckBox: false,
-      selected: [],
-      pagination: { rowsPerPage: 10, page: 1 },
       columns: [
         {
           name: "name",
@@ -81,17 +46,12 @@ export default {
   },
   methods: {
     ...mapActions("resource", {
-      getItemList: "getItemList",
-      selectItem: "selectItem"
-    }),
-    selectRow(row) {
-      this.selectItem({url: this.url, selectedItem: row.rows[0], selected: row.added})
-    }
+      getItemList: "getItemList"
+    })
   },
   computed: {
     ...mapState({
-      items: state => state.resource.items,
-      fields: state => state.resource.fields
+      items: state => state.resource.items
     })
   },
   created() {
@@ -99,5 +59,4 @@ export default {
   }
 };
 </script>
-
 <style lang="stylus"></style>

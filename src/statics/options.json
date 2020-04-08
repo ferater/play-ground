@@ -1,0 +1,5 @@
+{
+    "dynamicTable": {
+        "pagination": { "rowsPerPage": 10, "page": 1 }
+    }
+}
