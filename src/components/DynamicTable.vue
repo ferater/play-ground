@@ -15,12 +15,12 @@
       :pagination.sync="pagination"
       :selected.sync="selected"
       @selection="selectRow"
-      row-key="id"
+      row-key="name"
       selection="single"
     >
       <template v-slot:body="props">
         <q-tr
-          :props="props"
+          :props="props.data"
           :class="'cursor-pointer'"
           @click.native="props.selected = !props.selected"
         >
@@ -28,7 +28,12 @@
             <q-checkbox v-if="selectionCheckBox" v-model="props.selected" color="deep-orange" />
           </q-td>
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <span>{{ col.value }}</span>
+           <span v-if="col.value.length > 30">
+              {{ col.value | readMore(25, '...') | uppercaseFirst }}
+            </span>
+            <span v-else>
+              {{ col.value | uppercaseFirst }}
+            </span>
           </q-td>
         </q-tr>
       </template>
@@ -73,7 +78,7 @@ export default {
     selectRow(row) {
       this.selectItem({
         url: this.url,
-        selectedItem: row.rows[0],
+        selectedItem: row.rows[0].data,
         selected: row.added
       });
     }

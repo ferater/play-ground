@@ -4,7 +4,7 @@ export function someMutation (state) {
 */
 
 export function SET_ITEM_LIST(state, payload) {
-  state.items = payload;
+  state[payload.url] = payload.data;
 }
 
 

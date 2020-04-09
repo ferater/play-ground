@@ -14,33 +14,48 @@ export default {
   },
   data() {
     return {
-      url: this.$route.path,
+      url: this.$route.path.substring(1),
       /*** Tablo */
       tableTitle: "Ürünler",
       columns: [
         {
-          name: "name",
+          name: "code",
           required: true,
-          label: "Ürün Adı",
+          label: "Ürün Kodu",
           align: "left",
-          field: row => row.name,
+          field: row => row.data.code,
           format: val => `${val}`,
           sortable: true
         },
         {
-          name: "code",
+          name: "barcode",
           align: "left",
-          label: "Ürün Kodu",
-          field: "code",
+          label: "Barkod Numarası",
+          field: row => row.data.barcode,
+          sortable: true
+        },
+       {
+          name: "name",
+          align: "left",
+          label: "Ürün Adı",
+          field: row => row.data.name,
           sortable: true
         },
         {
-          name: "price",
+          name: "shelf_life",
           align: "left",
-          label: "Ürün Fiyatı",
-          field: "price",
+          label: "Raf Ömrü",
+          field: row => row.data.shelf_life + " Yıl",
           sortable: true
-        }
+        },
+        {
+          name: "note",
+          align: "left",
+          label: "Notlar",
+          field: row => row.data.note,
+          sortable: true
+        },
+        
       ]
     };
   },
@@ -51,7 +66,7 @@ export default {
   },
   computed: {
     ...mapState({
-      items: state => state.resource.items
+      items: state => state.resource.products
     })
   },
   created() {

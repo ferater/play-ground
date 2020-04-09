@@ -10,6 +10,14 @@
       "autofocus": true
     },
     {
+      "name": "barcode",
+      "type": "number",
+      "label": "Ürün Barkodu",
+      "icon": "code",
+      "clearable": false,
+      "autofocus": true
+    },
+    {
       "name": "name",
       "type": "text",
       "label": "Ürün Adı",
@@ -17,11 +25,48 @@
       "clearable": true
     },
     {
-      "name": "price",
+      "name": "shelf_life",
       "type": "number",
-      "label": "Ürün Fiyatı",
-      "icon": "local_offer",
-      "clearable": false
+      "label": "Raf Ömrü",
+      "icon": "code",
+      "clearable": false,
+      "autofocus": true
+    },
+    {
+      "name": "min_threshold",
+      "type": "number",
+      "label": "Min Stok Miktarı",
+      "icon": "code",
+      "clearable": false,
+      "autofocus": true
+    },
+    {
+      "name": "unit_amount",
+      "type": "number",
+      "label": "Varsayılan Miktar",
+      "icon": "code",
+      "clearable": false,
+      "autofocus": true
+    },
+    {
+      "name": "category_id",
+      "type": "number",
+      "label": "Kategori ID",
+      "icon": "code",
+      "clearable": false,
+      "autofocus": true
+    },
+    {
+      "name": "unit_id",
+      "type": "number",
+      "label": "Birim ID",
+      "icon": "code",
+      "clearable": false,
+      "autofocus": true
     }
+  ],
+  "selects": [
+    {"name":"categories", "label": "Ürün Kategorisi", "clearable": true},
+    {"name":"units", "label": "Birim", "clearable": true}
   ]
 }

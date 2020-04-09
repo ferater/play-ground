@@ -76,7 +76,7 @@
               color="white"
               text-color="secondary"
               class="q-ml-sm q-px-xs"
-              @click="showResourceForm(url)"
+              @click="showResourceForm($route.path)"
             >
               <q-tooltip
                 content-class="bg-amber text-black shadow-4"
@@ -135,7 +135,6 @@
         </q-toolbar>
       </q-header>
     </div>
-
     <q-drawer
       v-model="leftDrawerOpen"
       behavior="mobile"
@@ -232,7 +231,7 @@
     </q-page-container>
 
     <!-- Form dialog -->
-    <q-dialog v-model="resourceDialog" persistent position="right" @escape-key="cleanResourceForm">
+    <q-dialog v-model="resourceDialog" position="right" @escape-key="cleanResourceForm">
       <q-card class="resource-form">
         <q-toolbar>
           <q-toolbar-title class="card-form-title">{{ $t("resourceForm." + fields.title) }}</q-toolbar-title>
@@ -240,6 +239,9 @@
           <q-btn flat round dense icon="close" v-close-popup />-->
         </q-toolbar>
         <q-card-section class>
+          <template v-if="fields.selects">
+            <select-box v-for="select in fields.selects" :key="select.name" :url="select.name" :label="select.label" :clearable="select.clearable" />
+          </template>
           <q-input
             square
             bottom-slots
@@ -310,11 +312,14 @@
 <script>
 import routes from "../router/routes";
 import { mapActions, mapState } from "vuex";
+import SelectBox from '../components/SelectBox'
 export default {
   name: "GooglePhotosLayout",
+  components: {
+   SelectBox
+  },
   data() {
     return {
-      url: this.$route.path,
       confirm: false,
       btnLoading: false,
       data: {},
@@ -360,7 +365,7 @@ export default {
 
     /*** Düzenle Formu Aç */
     showEditForm() {
-      this.showResourceForm(this.url);
+      this.showResourceForm(this.$route.path);
       Object.assign(this.data, this.selectedItem);
     },
     /*** /Düzenle Formu Aç */
@@ -377,7 +382,7 @@ export default {
     handleSubmit() {
       if (this.data.id) {
         this.btnLoading = true;
-        this.updateItem({ url: this.url, data: this.data })
+        this.updateItem({ url: this.$route.path, data: this.data })
           .then(() => {
             setTimeout(() => {
               this.btnLoading = false;
@@ -398,7 +403,7 @@ export default {
           });
       } else {
         this.btnLoading = true;
-        this.storeItem({ url: this.url, data: this.data })
+        this.storeItem({ url: this.$route.path, data: this.data })
           .then(() => {
             setTimeout(() => {
               this.btnLoading = false;
@@ -424,11 +429,11 @@ export default {
     /*** Seçilen İtemi Sil */
     deleteSelectedItem() {
       this.btnLoading = true;
-      this.deleteItem({ url: this.url, id: this.selectedItem.id }).then(() => {
+      this.deleteItem({ url: this.$route.path, id: this.selectedItem.id }).then(() => {
         setTimeout(() => {
           this.btnLoading = false;
           this.hideConfirmPopup();
-           this.showNotify(this.notifyMessage, this.notifyType);
+          this.showNotify(this.notifyMessage, this.notifyType);
         }, 500);
         console.log("deleteSelectedItem: Silindi iştee");
       });
@@ -472,10 +477,10 @@ export default {
       selectedItem: state => state.resource.selectedItem,
       resourceDialog: state => state.resource.resourceDialog,
       notifyMessage: state => state.resource.notifyMessage,
-      notifyType: state => state.resource.notifyType,
+      notifyType: state => state.resource.notifyType
     })
-  }
-  // mounted() {}
+  },
+  // mounted() {},
 };
 </script>
 

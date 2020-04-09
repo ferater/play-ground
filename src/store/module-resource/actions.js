@@ -3,8 +3,8 @@ import resource from "../../services/resource";
 export async function getItemList(context, query) {
   try {
     const res = await resource.getItemList(query);
-    context.commit("SET_ITEM_LIST", res.data);
-    console.log("getList(store): ", res.data);
+    context.commit("SET_ITEM_LIST", {data: res.data, url: query.url});
+    console.log("getList(store): ", query.url, res);
   } catch (err) {
     console.log("getList(store): ", err.response);
   }

@@ -4,7 +4,7 @@ export default {
     getItemList(query) {
         return axios({
             method: 'get',
-            url: '/api' + query.url,
+            url: '/api/' + query.url,
             params: query.params
         })
     },
@@ -13,7 +13,7 @@ export default {
     storeItem(query) {
         return axios({
             method: 'post',
-            url: '/api' + query.url,
+            url: '/api/' + query.url,
             data: query.data
         })
     },
@@ -22,7 +22,7 @@ export default {
     updateItem(query) {
         return axios({
             method: 'put',
-            url: '/api' + query.url + '/' + query.data.id,
+            url: '/api/' + query.url + '/' + query.data.id,
             data: query.data
         })
     },
@@ -31,12 +31,12 @@ export default {
     deleteItem(query) {
         return axios({
             method: 'delete',
-            url: '/api' + query.url + '/' + query.id,
+            url: '/api/' + query.url + '/' + query.id,
         })
     },
 
 
     fetchJson(jsonurl) {
-      return fetch('statics' + jsonurl + '.json');
+      return fetch('statics/' + jsonurl + '.json');
     }
 }

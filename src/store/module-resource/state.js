@@ -1,6 +1,9 @@
 export default function () {
   return {
-   items: [],
+   users: [],
+   categories: [],
+   products: [],
+   units: [],
    selectedItem: {},
    fields: {},
    resourceDialog: false,
