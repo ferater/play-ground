@@ -207,21 +207,14 @@
         position="left"
         class="buttons-left"
       >
-      <li data-flag="dashboards" class=""><a href="#/app/dashboards"><i class="iconsminds-shop-4"></i>
-                        Dashboards
-                    </a></li><li data-flag="pages" class="active"><a href="#/app/pages"><i class="iconsminds-digital-drawing"></i>
-                        Pages
-                    </a></li><li data-flag="applications" class=""><a href="#/app/applications"><i class="iconsminds-air-balloon-1"></i>
-                        Applications
-                    </a></li><li data-flag="ui" class=""><a href="#/app/ui"><i class="iconsminds-pantone"></i>
-                        UI
-                    </a></li><li data-flag="menu" class=""><a href="#/app/menu"><i class="iconsminds-three-arrow-fork"></i>
-                        Menu
-                    </a></li><li data-flag="blank-page" class=""><a href="/app/blank-page" class=""><i class="iconsminds-bucket"></i>
-                        Blank Page
-                    </a></li><li data-flag="docs" class=""><a href="https://piaf-vue-docs.coloredstrategies.com/" rel="noopener noreferrer" target="_blank"><i class="iconsminds-library"></i>
-                        Docs
-                    </a></li>
+        <ul class="list-unstyled">
+          <li class="active">
+            <a href="#">
+              <q-icon name="people" />
+              Deneme
+            </a>
+          </li>
+        </ul>
         <!-- <div class="column">
           <div
             v-for="route in routes[1].children"
