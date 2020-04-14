@@ -1,40 +1,38 @@
 <template>
   <q-layout view="lHh Lpr fff" class="bg-grey-1">
-    <div class="myhead">
-      <q-header class="text-grey-8 my-header" height-hint="64">
-        <q-toolbar class="GPL__toolbar">
-          <q-btn
-            flat
-            dense
-            round
-            @click="leftDrawerOpen = !leftDrawerOpen"
-            aria-label="Menu"
-            icon="menu"
-            class="q-mx-md"
-          />
+    <q-header class="text-grey-8 app-toolbar" height-hint="80">
+      <q-toolbar class="GPL__toolbar">
+        <q-btn
+          flat
+          dense
+          round
+          @click="leftDrawerOpen = !leftDrawerOpen"
+          aria-label="Menu"
+          icon="menu"
+          class="q-mx-md"
+        />
 
-          <q-toolbar-title v-if="$q.screen.gt.sm" shrink class="row items-center no-wrap">
-            <!-- <img src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg" /> -->
-            <span class="q-ml-sm">Otomasyon</span>
-          </q-toolbar-title>
+        <!-- <q-toolbar-title v-if="$q.screen.gt.sm" shrink class="row items-center no-wrap">
+          <img src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg" />
+          <span class="q-ml-sm">Otomasyon</span>
+        </q-toolbar-title> -->
 
-          <q-space />
+        <q-input
+          v-if="$q.screen.gt.xs"
+          class="GPL__toolbar-input"
+          dense
+          rounded
+          standout="bg-grey-3"
+          v-model="search"
+          placeholder="Ara"
+        >
+          <template v-slot:append>
+            <q-icon v-if="search === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
+          </template>
+        </q-input>
 
-          <q-input
-            v-if="$q.screen.gt.xs"
-            class="GPL__toolbar-input"
-            dense
-            standout="bg-primary"
-            v-model="search"
-            placeholder="Search"
-          >
-            <template v-slot:prepend>
-              <q-icon v-if="search === ''" name="search" />
-              <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
-            </template>
-          </q-input>
-
-          <!-- <q-btn
+        <!-- <q-btn
             v-if="$q.screen.gt.xs"
             flat
             dense
@@ -67,74 +65,73 @@
                 </q-item>
               </q-list>
             </q-menu>
-          </q-btn>-->
-          <div v-if="isEmptyObject(selectedItem)" class="q-ml-md scale-up-ver-center">
-            <q-btn
-              dense
-              icon="add_circle"
-              size="14px"
-              color="white"
-              text-color="secondary"
-              class="q-ml-sm q-px-xs"
-              @click="showResourceForm($route.path)"
-            >
-              <q-tooltip
-                content-class="bg-amber text-black shadow-4"
-                :offset="[5, 5]"
-              >Yeni ... Oluştur</q-tooltip>
-            </q-btn>
-          </div>
-          <div v-if="!isEmptyObject(selectedItem)" class="q-ml-md scale-up-center">
-            <q-btn
-              class="q-px-xs q-mx-xs"
-              dense
-              color="white"
-              text-color="deep-orange"
-              icon="remove_red_eye"
-            >
-              <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Detayları Gör</q-tooltip>
-            </q-btn>
-            <q-btn
-              class="q-px-xs q-mx-xs"
-              dense
-              color="white"
-              text-color="deep-orange"
-              icon="edit"
-              @click="showEditForm"
-            >
-              <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Düzenle</q-tooltip>
-            </q-btn>
-            <q-btn
-              class="q-px-xs q-mx-xs"
-              dense
-              color="white"
-              text-color="deep-orange"
-              icon="delete"
-              @click="showDeleteConfirmPopup"
-            >
-              <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Sil</q-tooltip>
-            </q-btn>
-          </div>
-          <q-space />
+        </q-btn>-->
+        <div v-if="isEmptyObject(selectedItem)" class="q-ml-md scale-up-ver-center">
+          <q-btn
+            dense
+            icon="add_circle"
+            size="14px"
+            color="white"
+            text-color="secondary"
+            class="q-ml-sm q-px-xs"
+            @click="showResourceForm($route.path)"
+          >
+            <q-tooltip
+              content-class="bg-amber text-black shadow-4"
+              :offset="[5, 5]"
+            >Yeni ... Oluştur</q-tooltip>
+          </q-btn>
+        </div>
+        <div v-if="!isEmptyObject(selectedItem)" class="q-ml-md scale-up-center">
+          <q-btn
+            class="q-px-xs q-mx-xs"
+            dense
+            color="white"
+            text-color="deep-orange"
+            icon="remove_red_eye"
+          >
+            <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Detayları Gör</q-tooltip>
+          </q-btn>
+          <q-btn
+            class="q-px-xs q-mx-xs"
+            dense
+            color="white"
+            text-color="deep-orange"
+            icon="edit"
+            @click="showEditForm"
+          >
+            <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Düzenle</q-tooltip>
+          </q-btn>
+          <q-btn
+            class="q-px-xs q-mx-xs"
+            dense
+            color="white"
+            text-color="deep-orange"
+            icon="delete"
+            @click="showDeleteConfirmPopup"
+          >
+            <q-tooltip content-class="bg-amber text-black shadow-4" :offset="[5, 5]">Sil</q-tooltip>
+          </q-btn>
+        </div>
+        <q-space />
 
-          <div class="q-gutter-sm row items-center no-wrap">
-            <q-btn round dense flat color="text-grey-7" icon="apps">
-              <q-tooltip>Google Apps</q-tooltip>
-            </q-btn>
-            <q-btn round dense flat color="grey-8" icon="notifications">
-              <q-badge color="red" text-color="white" floating>2</q-badge>
-              <q-tooltip>Notifications</q-tooltip>
-            </q-btn>
-            <q-btn round flat>
-              <q-avatar size="26px">
-                <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-              </q-avatar>
-              <q-tooltip>Account</q-tooltip>
-            </q-btn>
-          </div>
-        </q-toolbar>
-      </q-header>
-    </div>
+        <div class="q-gutter-sm row items-center no-wrap">
+          <q-btn round dense flat color="text-grey-7" icon="apps">
+            <q-tooltip>Google Apps</q-tooltip>
+          </q-btn>
+          <q-btn round dense flat color="grey-8" icon="notifications">
+            <q-badge color="red" text-color="white" floating>2</q-badge>
+            <q-tooltip>Notifications</q-tooltip>
+          </q-btn>
+          <q-btn round flat>
+            <q-avatar size="26px">
+              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+            </q-avatar>
+            <q-tooltip>Account</q-tooltip>
+          </q-btn>
+        </div>
+      </q-toolbar>
+    </q-header>
     <q-drawer
       v-model="leftDrawerOpen"
       behavior="mobile"
@@ -210,23 +207,44 @@
         position="left"
         class="buttons-left"
       >
-        <div class="fit q-pt-xl q-px-sm column">
-          <q-btn
+      <li data-flag="dashboards" class=""><a href="#/app/dashboards"><i class="iconsminds-shop-4"></i>
+                        Dashboards
+                    </a></li><li data-flag="pages" class="active"><a href="#/app/pages"><i class="iconsminds-digital-drawing"></i>
+                        Pages
+                    </a></li><li data-flag="applications" class=""><a href="#/app/applications"><i class="iconsminds-air-balloon-1"></i>
+                        Applications
+                    </a></li><li data-flag="ui" class=""><a href="#/app/ui"><i class="iconsminds-pantone"></i>
+                        UI
+                    </a></li><li data-flag="menu" class=""><a href="#/app/menu"><i class="iconsminds-three-arrow-fork"></i>
+                        Menu
+                    </a></li><li data-flag="blank-page" class=""><a href="/app/blank-page" class=""><i class="iconsminds-bucket"></i>
+                        Blank Page
+                    </a></li><li data-flag="docs" class=""><a href="https://piaf-vue-docs.coloredstrategies.com/" rel="noopener noreferrer" target="_blank"><i class="iconsminds-library"></i>
+                        Docs
+                    </a></li>
+        <!-- <div class="column">
+          <div
             v-for="route in routes[1].children"
             :key="route.path"
-            :to="{ name: route.name }"
-            round
-            flat
-            color="primary"
-            stack
-            no-caps
-            size="26px"
-            class="GPL__side-btn"
+            class="q-px-sm"
+            :class="{active: $route.path == route.path}"
+            style="border-bottom: 1px solid #f3f3f3"
           >
-            <q-icon size="22px" :name="route.meta.icon" />
-            <div class="GPL__side-btn__label">{{ $t("routes." + route.meta.label) }}</div>
-          </q-btn>
-        </div>
+            <q-btn
+              :to="{ name: route.name }"
+              round
+              flat
+              color="primary"
+              stack
+              no-caps
+              size="26px"
+              class="GPL__side-btn"
+            >
+              <q-icon size="22px" class="GPL__side-btn__icon" :name="route.meta.icon" />
+              <div class="GPL__side-btn__label">{{ $t("routes." + route.meta.label) }}</div>
+            </q-btn>
+          </div>
+        </div>-->
       </q-page-sticky>
     </q-page-container>
 
@@ -240,7 +258,13 @@
         </q-toolbar>
         <q-card-section class>
           <template v-if="fields.selects">
-            <select-box v-for="select in fields.selects" :key="select.name" :url="select.name" :label="select.label" :clearable="select.clearable" />
+            <select-box
+              v-for="select in fields.selects"
+              :key="select.name"
+              :url="select.name"
+              :label="select.label"
+              :clearable="select.clearable"
+            />
           </template>
           <q-input
             square
@@ -312,11 +336,11 @@
 <script>
 import routes from "../router/routes";
 import { mapActions, mapState } from "vuex";
-import SelectBox from '../components/SelectBox'
+import SelectBox from "../components/SelectBox";
 export default {
   name: "GooglePhotosLayout",
   components: {
-   SelectBox
+    SelectBox
   },
   data() {
     return {
@@ -429,14 +453,16 @@ export default {
     /*** Seçilen İtemi Sil */
     deleteSelectedItem() {
       this.btnLoading = true;
-      this.deleteItem({ url: this.$route.path, id: this.selectedItem.id }).then(() => {
-        setTimeout(() => {
-          this.btnLoading = false;
-          this.hideConfirmPopup();
-          this.showNotify(this.notifyMessage, this.notifyType);
-        }, 500);
-        console.log("deleteSelectedItem: Silindi iştee");
-      });
+      this.deleteItem({ url: this.$route.path, id: this.selectedItem.id }).then(
+        () => {
+          setTimeout(() => {
+            this.btnLoading = false;
+            this.hideConfirmPopup();
+            this.showNotify(this.notifyMessage, this.notifyType);
+          }, 500);
+          console.log("deleteSelectedItem: Silindi iştee");
+        }
+      );
     },
     showDeleteConfirmPopup() {
       this.confirm = true;
@@ -479,301 +505,7 @@ export default {
       notifyMessage: state => state.resource.notifyMessage,
       notifyType: state => state.resource.notifyType
     })
-  },
+  }
   // mounted() {},
 };
 </script>
-
-<style lang="stylus">
-.myhead {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 95px;
-  height: 83px;
-  background-color: #fafafaf2;
-  z-index: 9;
-}
-
-.my-header {
-  top: 20px;
-  right: 15px;
-  left: 195px;
-  box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 5px;
-  background-color: #fff;
-}
-
-.buttons-left {
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  height: 330px;
-  border-radius: 0 5px 5px 0;
-  background-color: #fff;
-  box-shadow: 0 8px 10px -10px rgba(0, 0, 0, 0.28), 0 4px 20px 0 rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(76, 175, 80, 0.2);
-  transition: all 0.1s ease;
-}
-
-.resource-form {
-  width: 350px;
-}
-
-.q-dialog__inner > div {
-  overflow: visible;
-}
-
-.card-form-title {
-  position: absolute;
-  top: -15px;
-  height: 50px;
-  border-radius: 3px;
-  box-shadow: 2px 4px 6px 1px $cardTitleShadow;
-  background: $cardTitle;
-  padding: 0 10px !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: bold;
-}
-
-.q-dialog__backdrop {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.GPL {
-  &__page-container {
-    padding-top: 90px !important;
-  }
-
-  &__toolbar {
-    height: 64px;
-  }
-
-  &__toolbar-input {
-    width: 35%;
-  }
-
-  &__drawer-item {
-    line-height: 24px;
-    border-radius: 0 24px 24px 0;
-    margin-right: 12px;
-
-    .q-item__section--avatar {
-      padding-left: 12px;
-
-      .q-icon {
-        color: #5f6368;
-      }
-    }
-
-    .q-item__label:not(.q-item__label--caption) {
-      color: #3c4043;
-      letter-spacing: 0.01785714em;
-      font-size: 0.875rem;
-      font-weight: 500;
-      line-height: 1.25rem;
-    }
-
-    &--storage {
-      border-radius: 0;
-      margin-right: 0;
-      padding-top: 24px;
-      padding-bottom: 24px;
-    }
-  }
-
-  &__side-btn {
-    &__label {
-      font-size: 12px;
-      line-height: 24px;
-      letter-spacing: 0.01785714em;
-      font-weight: 500;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    &__page-container {
-      padding-top: 110px !important;
-      padding-left: 176px;
-    }
-  }
-}
-
-@media (max-width: 1023px) {
-  .GPL {
-    &__page-container {
-      padding-top: 110px !important;
-    }
-  }
-
-  .my-header {
-    top: 20px;
-    right: 15px;
-    left: 15px;
-    box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.12);
-    border-radius: 5px;
-    background-color: #fff;
-    transition: all 0.5s ease;
-  }
-}
-
-/* *********** */
-.scale-up-hor-left {
-  -webkit-animation: scale-up-hor-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: scale-up-hor-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-}
-
-.slide-left {
-  -webkit-animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-  animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-.scale-up-ver-center {
-  -webkit-animation: scale-up-ver-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: scale-up-ver-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-}
-
-.scale-up-center {
-  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-}
-
-/* ----------------------------------------------
- * Generated by Animista on 2020-4-4 16:15:10
- * Licensed under FreeBSD License.
- * See http://animista.net/license for more info.
- * w: http://animista.net, t: @cssanimista
- * ---------------------------------------------- */
-/**
- * ----------------------------------------
- * animation scale-up-hor-left
- * ----------------------------------------
- */
-@keyframes scale-up-hor-left {
-  0% {
-    -webkit-transform: scaleX(0.4);
-    transform: scaleX(0.4);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
-
-  100% {
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
-}
-
-@keyframes scale-up-hor-left {
-  0% {
-    -webkit-transform: scaleX(0.4);
-    transform: scaleX(0.4);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
-
-  100% {
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
-}
-
-/* ----------------------------------------------
- * Generated by Animista on 2020-4-4 17:38:7
- * Licensed under FreeBSD License.
- * See http://animista.net/license for more info.
- * w: http://animista.net, t: @cssanimista
- * ---------------------------------------------- */
-/**
- * ----------------------------------------
- * animation slide-left
- * ----------------------------------------
- */
-@keyframes slide-left {
-  0% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-
-  100% {
-    -webkit-transform: translateX(-100px);
-    transform: translateX(-100px);
-  }
-}
-
-@keyframes slide-left {
-  0% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-
-  100% {
-    -webkit-transform: translateX(-100px);
-    transform: translateX(-100px);
-  }
-}
-
-/* ----------------------------------------------
- * Generated by Animista on 2020-4-5 13:49:11
- * Licensed under FreeBSD License.
- * See http://animista.net/license for more info.
- * w: http://animista.net, t: @cssanimista
- * ---------------------------------------------- */
-/**
- * ----------------------------------------
- * animation scale-up-ver-center
- * ----------------------------------------
- */
-@keyframes scale-up-ver-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
-
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
-
-@keyframes scale-up-ver-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
-
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
-
-@keyframes scale-up-ver-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
-
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
-
-@keyframes scale-up-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
-
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
-</style>
