@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <dynamic-table :data="items" :columns="columns" :tableTitle="tableTitle" />
+    <dynamic-table :columns="columns" :data="users" :icon="icon" :url="url" :name="name"/>
   </q-page>
 </template>
 
@@ -15,6 +15,8 @@ export default {
   data() {
     return {
       url: this.$route.path.substring(1),
+      name: this.$t('users.user'),
+      icon: "people",
       /*** Tablo */
       tableTitle: "Kullanıcılar",
       columns: [
@@ -40,7 +42,7 @@ export default {
           label: "Bağlantı",
           field: row => row.links.self,
           sortable: true
-        },   
+        },
       ]
     };
   },
@@ -51,7 +53,7 @@ export default {
   },
   computed: {
     ...mapState({
-      items: state => state.resource.users
+      users: state => state.resource.users
     })
   },
   created() {
