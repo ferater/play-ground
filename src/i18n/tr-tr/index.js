@@ -24,5 +24,6 @@ export default {
     editToolTip: "{item} Düzenle",
     delete: "Sil",
     deleteToolTip: "{item} Sil",
+    deleteConfirm: "{item}: <b><u>{name}</u></b> silinecek, Emin misiniz?"
   }
 }

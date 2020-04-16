@@ -1,145 +1,119 @@
 // app global css in Stylus form
-@font-face {
-  font-family: 'Nunito', sans-serif;
-  src: url(./fonts/nunito/Nunito-Regular.ttf);
-}
+@font-face
+  font-family 'Nunito', sans-serif
+  src url('./fonts/nunito/Nunito-Regular.ttf')
 
-.app-toolbar {
-  top: 0;
-  right: 0;
-  left: 0;
+.app-toolbar
+  top 0
+  right 0
+  left 0
   height 80px
-  box-shadow: 0 1px 15px rgba(0, 0, 0, .04), 0 1px 6px rgba(0, 0, 0, .04)
-  background-color: #fff;
+  box-shadow 0 1px 15px rgba(0, 0, 0, .04), 0 1px 6px rgba(0, 0, 0, .04)
+  background-color #fff
   padding auto 0
-}
 
-.q-dialog__inner > div {
-  overflow: visible;
-}
+.q-dialog__inner > div
+  overflow visible
 
-.card-table-title {
-  position: absolute;
-  top: -15px;
-  height: 50px;
-  border-radius: 3px;
-  box-shadow: 2px 4px 6px 1px $cardTitleShadow;
-  background: $cardTitle;
-  padding: 0 10px !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: bold;
-  i{
+.card-table-title
+  position absolute
+  top -15px
+  height 50px
+  border-radius 3px
+  box-shadow 2px 4px 6px 1px $cardTitleShadow
+  background $cardTitle
+  padding 0 10px !important
+  display flex
+  justify-content center
+  align-items center
+  color #fff
+  font-family -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+  font-weight bold
+
+  i
     font-size 35px
-  }
-}
 
-.q-dialog__backdrop {
-  background-color: rgba(0, 0, 0, 0.8);
-}
+.q-dialog__backdrop
+  background-color rgba(0, 0, 0, .8)
 
-.GPL {
-  &__page-container {
-    padding-top: 90px !important;
-  }
+.GPL
+  &__page-container
+    padding-top 90px !important
 
-  &__toolbar {
-    height: 80px;
-  }
+  &__toolbar
+    height 80px
 
-  &__toolbar-input {
-    width: 10%;
-    margin-left: 15px
-    transition: width 0.5s ease
-  }
+  &__toolbar-input
+    width 10%
+    margin-left 15px
+    transition width .5s ease
 
-  &__toolbar-input:focus-within {
-    width: 25%;
-  }
+  &__toolbar-input:focus-within
+    width 25%
 
-  &__drawer-item {
-    line-height: 24px;
-    border-radius: 0 24px 24px 0;
-    margin-right: 12px;
+  &__drawer-item
+    line-height 24px
+    border-radius 0 24px 24px 0
+    margin-right 12px
 
-    .q-item__section--avatar {
-      padding-left: 12px;
+    .q-item__section--avatar
+      padding-left 12px
 
-      .q-icon {
-        color: #5f6368;
-      }
-    }
+      .q-icon
+        color #5f6368
 
-    .q-item__label:not(.q-item__label--caption) {
-      color: #3c4043;
-      letter-spacing: 0.01785714em;
-      font-size: 0.875rem;
-      font-weight: 500;
-      line-height: 1.25rem;
-    }
+    .q-item__label:not(.q-item__label--caption)
+      color #3c4043
+      letter-spacing .01785714em
+      font-size .875rem
+      font-weight 500
+      line-height 1.25rem
 
-    &--storage {
-      border-radius: 0;
-      margin-right: 0;
-      padding-top: 24px;
-      padding-bottom: 24px;
-    }
-  }
+    &--storage
+      border-radius 0
+      margin-right 0
+      padding-top 24px
+      padding-bottom 24px
 
-  //  &__side-btn__icon {
-  //    color #777
-  //}
-  //
-  //&__side-btn {
-  //  &__label {
-  //    font-size: 12px;
-  //    line-height: 24px;
-  //    letter-spacing: 0.01785714em;
-  //    font-weight: 500;
-  //    color #777
-  //  }
-  //}
+  // &__side-btn__icon {
+  // color #777
+  // }
+  // 
+  // &__side-btn {
+  // &__label {
+  // font-size: 12px;
+  // line-height: 24px;
+  // letter-spacing: 0.01785714em;
+  // font-weight: 500;
+  // color #777
+  // }
+  // }
+  @media (min-width: 1024px)
+    &__page-container
+      padding-top 110px !important
+      padding-left 100px
 
-  @media (min-width: 1024px) {
-    &__page-container {
-      padding-top: 110px !important;
-      padding-left: 100px;
-    }
-  }
-
-}
-
-@media (max-width: 1023px) {
-  .GPL {
-    &__page-container {
-      padding-top: 110px !important;
-    }
-  }
-}
+@media (max-width: 1023px)
+  .GPL
+    &__page-container
+      padding-top 110px !important
 
 /* *********** */
-.scale-up-hor-left {
-  -webkit-animation: scale-up-hor-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: scale-up-hor-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-}
+.scale-up-hor-left
+  -webkit-animation scale-up-hor-left .4s cubic-bezier(.39, .575, .565, 1) both
+  animation scale-up-hor-left .4s cubic-bezier(.39, .575, .565, 1) both
 
-.slide-left {
-  -webkit-animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-  animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
+.slide-left
+  -webkit-animation slide-left .5s cubic-bezier(.25, .46, .45, .94) both
+  animation slide-left .5s cubic-bezier(.25, .46, .45, .94) both
 
-.scale-up-ver-center {
-  -webkit-animation: scale-up-ver-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: scale-up-ver-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-}
+.scale-up-ver-center
+  -webkit-animation scale-up-ver-center .4s cubic-bezier(.39, .575, .565, 1) both
+  animation scale-up-ver-center .4s cubic-bezier(.39, .575, .565, 1) both
 
-.scale-up-center {
-  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-}
+.scale-up-center
+  -webkit-animation scale-up-center .4s cubic-bezier(.39, .575, .565, 1) both
+  animation scale-up-center .4s cubic-bezier(.39, .575, .565, 1) both
 
 /* ----------------------------------------------
  * Generated by Animista on 2020-4-4 16:15:10
@@ -152,37 +126,31 @@
  * animation scale-up-hor-left
  * ----------------------------------------
  */
-@keyframes scale-up-hor-left {
-  0% {
-    -webkit-transform: scaleX(0.4);
-    transform: scaleX(0.4);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
+@keyframes scale-up-hor-left
+  0%
+    -webkit-transform scaleX(.4)
+    transform scaleX(.4)
+    -webkit-transform-origin 0 0
+    transform-origin 0 0
 
-  100% {
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
-}
+  100%
+    -webkit-transform scaleX(1)
+    transform scaleX(1)
+    -webkit-transform-origin 0 0
+    transform-origin 0 0
 
-@keyframes scale-up-hor-left {
-  0% {
-    -webkit-transform: scaleX(0.4);
-    transform: scaleX(0.4);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
+@keyframes scale-up-hor-left
+  0%
+    -webkit-transform scaleX(.4)
+    transform scaleX(.4)
+    -webkit-transform-origin 0 0
+    transform-origin 0 0
 
-  100% {
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-  }
-}
+  100%
+    -webkit-transform scaleX(1)
+    transform scaleX(1)
+    -webkit-transform-origin 0 0
+    transform-origin 0 0
 
 /* ----------------------------------------------
  * Generated by Animista on 2020-4-4 17:38:7
@@ -195,29 +163,23 @@
  * animation slide-left
  * ----------------------------------------
  */
-@keyframes slide-left {
-  0% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
+@keyframes slide-left
+  0%
+    -webkit-transform translateX(0)
+    transform translateX(0)
 
-  100% {
-    -webkit-transform: translateX(-100px);
-    transform: translateX(-100px);
-  }
-}
+  100%
+    -webkit-transform translateX(-100px)
+    transform translateX(-100px)
 
-@keyframes slide-left {
-  0% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
+@keyframes slide-left
+  0%
+    -webkit-transform translateX(0)
+    transform translateX(0)
 
-  100% {
-    -webkit-transform: translateX(-100px);
-    transform: translateX(-100px);
-  }
-}
+  100%
+    -webkit-transform translateX(-100px)
+    transform translateX(-100px)
 
 /* ----------------------------------------------
  * Generated by Animista on 2020-4-5 13:49:11
@@ -230,66 +192,54 @@
  * animation scale-up-ver-center
  * ----------------------------------------
  */
-@keyframes scale-up-ver-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
+@keyframes scale-up-ver-center
+  0%
+    -webkit-transform scaleY(.4)
+    transform scaleY(.4)
 
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
+  100%
+    -webkit-transform scaleY(1)
+    transform scaleY(1)
 
-@keyframes scale-up-ver-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
+@keyframes scale-up-ver-center
+  0%
+    -webkit-transform scaleY(.4)
+    transform scaleY(.4)
 
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
+  100%
+    -webkit-transform scaleY(1)
+    transform scaleY(1)
 
-@keyframes scale-up-ver-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
+@keyframes scale-up-ver-center
+  0%
+    -webkit-transform scaleY(.4)
+    transform scaleY(.4)
 
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
+  100%
+    -webkit-transform scaleY(1)
+    transform scaleY(1)
 
-@keyframes scale-up-center {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-  }
+@keyframes scale-up-center
+  0%
+    -webkit-transform scaleY(.4)
+    transform scaleY(.4)
 
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-  }
-}
+  100%
+    -webkit-transform scaleY(1)
+    transform scaleY(1)
 
-/*** Sidenav */
+/* ** Sidenav */
 .sidenav
   position fixed
-  top: 110px
+  top 110px
   left 0
   width 95px
-  height: 70vh;
-  border-radius: 0 5px 5px 0;
-  padding 10px 0 10px 0
-  background-color: #ffffff;
-  box-shadow: 0 8px 10px -10px rgba(0, 0, 0, 0.28), 0 4px 20px 0 rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(76, 175, 80, 0.2);
-  transition: all 0.1s ease;
+  height 705px
+  border-radius 0 5px 5px 0
+  padding 10px 0
+  background-color #ffffff
+  box-shadow 0 8px 10px -10px rgba(0, 0, 0, .28), 0 4px 20px 0 rgba(0, 0, 0, .12), 0 7px 8px -5px rgba(76, 175, 80, .2)
+  transition all .1s ease
 
   .list-unstyled
     list-style none
@@ -334,6 +284,7 @@
         i
           font-size 32px
           line-height 42px
+
 .actions-bar
   position relative
   top -20px
@@ -343,11 +294,10 @@
   display flex
   justify-content start
   align-items center
-  //background orange
+  // background orange
 
-.text-brand {
-  color: $primaryBtn;
-}
-.bg-brand {
-  background-color: $primaryBtn;
-}
+.text-brand
+  color $primaryBtn
+
+.bg-brand
+  background-color $primaryBtn

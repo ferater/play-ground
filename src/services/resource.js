@@ -10,20 +10,20 @@ export default {
     },
 
 
-    storeItem(query) {
+    storeItem(resource) {
         return axios({
             method: 'post',
-            url: '/api/' + query.url,
-            data: query.data
+            url: '/api/' + resource.url,
+            data: resource.data
         })
     },
 
 
-    updateItem(query) {
+    updateItem(resource) {
         return axios({
             method: 'put',
-            url: '/api/' + query.url + '/' + query.data.id,
-            data: query.data
+            url: '/api/' + resource.url + '/' + resource.data.id,
+            data: resource.data
         })
     },
 
