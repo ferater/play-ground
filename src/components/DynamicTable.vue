@@ -100,7 +100,7 @@
       <q-table
         :columns="columns"
         :data="data"
-        :filter="filter"
+        :filter="search"
         :pagination.sync="pagination"
         :selected.sync="selected"
         :row-key="row => row.data.id"
@@ -127,8 +127,8 @@
     </q-card>
     <span>Selected : {{isItemSelected}}</span>
     <!-- Resource Form -->
-    <q-dialog position="right" v-model="resourceForm"> 
-       <q-card class="resource-form"> 
+    <q-dialog position="right" class="resource-form-full-height" v-model="resourceForm"> 
+       <q-card class="resource-form resource-form-full-height"> 
          <q-toolbar> 
            <q-toolbar-title class="card-form-title">Title</q-toolbar-title> 
 <!--             <q-space /> 
@@ -158,6 +158,7 @@
              :disable="btnLoading" 
              color="primary" 
              label="İptal" 
+             v-close-popup
            /> 
            <q-btn 
              :loading="btnLoading" 
@@ -254,6 +255,7 @@ export default {
       this.deleteItem({ url: this.url, id: this.selected[0].data.id }).then(
         res => {
           this.selected = [];
+          this.search = "";
           this.confirm = false;
           console.log("deleteSelectedItem(DynamicTable, Then): Silme Başarılı");
         }

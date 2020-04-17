@@ -9,7 +9,7 @@
   import {mapActions, mapState} from "vuex";
 
   export default {
-    name: "ResourcePage",
+    name: "PageProduct",
     components: {
       DynamicTable
     },

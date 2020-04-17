@@ -8,7 +8,7 @@
 import DynamicTable from "../components/DynamicTable";
 import { mapActions, mapState } from "vuex";
 export default {
-  name: "PageProducts",
+  name: "PageUsers",
   components: {
     DynamicTable
   },
