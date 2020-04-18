@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="actions-bar">
+      <!-- Arama -->
       <q-input
         class="GPL__toolbar-input"
         dense
@@ -15,7 +16,58 @@
           <q-icon @click="search = ''" class="cursor-pointer" name="clear" v-else />
         </template>
       </q-input>
+      <!--  -->
+      <!-- Stun göster/gizle -->
+      <q-select
+        v-model="visibleColumns"
+        :options="columns"
+        :display-value="$t('dynamicTable.columns')"
+        multiple
+        emit-value
+        map-options
+        borderless
+        dense
+        options-dense
+        color="secondary"
+        class="q-mx-lg"
+      >
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section>
+              <q-item-label>{{scope.opt.label}}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-toggle v-model="visibleColumns" :val="scope.opt.name" color="secondary" />
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <!-- seperator select -->
+      <q-select
+        v-model="separator"
+        :options="separatorOptions"
+        :display-value="$t('dynamicTable.borders')"
+        multiple
+        emit-value
+        map-options
+        borderless
+        dense
+        options-dense
+        color="secondary"
+      >
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section>
+              <q-item-label v-html="scope.opt.label"></q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-radio v-model="separator" :val="scope.opt.value" color="secondary" />
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
       <q-space />
+      <!-- Ekle Butonu -->
       <div v-if="!isItemSelected" class="add">
         <q-btn
           v-if="$q.screen.gt.xs"
@@ -28,7 +80,7 @@
           class="q-py-xs q-px-sm"
           color="brand"
           icon="add_circle"
-          @click="toggleResourceForm"
+          @click="showResourceForm"
         >
           <q-tooltip
             :offset="[5, 5]"
@@ -36,6 +88,7 @@
           >{{ $t('dynamicTable.addToolTip', {item: name}) }}</q-tooltip>
         </q-btn>
       </div>
+      <!-- Göster Düzenle  Sil Butonları -->
       <div v-else class="actions">
         <q-btn
           :label="$t('dynamicTable.detail')"
@@ -97,6 +150,7 @@
         <!--       <q-space />-->
         <!--      <q-btn flat round dense icon="add_circle" class="benim" />-->
       </q-toolbar>
+      <!-- Dinamik Tablo -->
       <q-table
         :columns="columns"
         :data="data"
@@ -104,14 +158,18 @@
         :pagination.sync="pagination"
         :selected.sync="selected"
         :row-key="row => row.data.id"
+        :separator="separator"
+        :visible-columns="visibleColumns"
         selection="single"
       >
+        <!-- Tablo TR -->
         <template v-slot:body="props">
           <q-tr
             :class="'cursor-pointer'"
             :props="props"
             @click.native="props.selected = !props.selected"
           >
+            <!-- Tablo TD -->
             <q-td auto-width>
               <q-checkbox color="deep-orange" v-if="selectionCheckBox" v-model="props.selected" />
             </q-td>
@@ -127,49 +185,54 @@
     </q-card>
     <span>Selected : {{isItemSelected}}</span>
     <!-- Resource Form -->
-    <q-dialog position="right" class="resource-form-full-height" v-model="resourceForm"> 
-       <q-card class="resource-form resource-form-full-height"> 
-         <q-toolbar> 
-           <q-toolbar-title class="card-form-title">Title</q-toolbar-title> 
-<!--             <q-space /> 
-           <q-btn flat round dense icon="close" v-close-popup />  -->
-         </q-toolbar> 
-         <q-card-section class> 
-           <q-input 
-             :autofocus="field.autofocus" 
-             :clearable="field.clearable" 
-             :disable="btnLoading" 
-             :key="field.name" 
-             :label="field.label" 
-             :type="field.type" 
-             bottom-slots 
-             square 
-             v-for="field in fields.form" 
-             v-model="data[field.name]" 
-           > 
-             <template v-slot:prepend> 
-               <q-icon :name="field.icon"/> 
-             </template> 
-           </q-input> 
-         </q-card-section> 
-         <q-separator/> 
-         <q-card-actions align="right"> 
-           <q-btn 
-             :disable="btnLoading" 
-             color="primary" 
-             label="İptal" 
-             v-close-popup
-           /> 
-           <q-btn 
-             :loading="btnLoading" 
-             color="primary" 
-             label="Kaydet" 
-           /> 
-         </q-card-actions> 
-       </q-card> 
-     </q-dialog> 
+    <q-dialog position="top" v-model="resourceForm">
+      <q-card class="resource-form resource-form-full-height" :style="formProps.style">
+        <q-toolbar>
+          <q-toolbar-title class="card-form-title">{{ $t('dynamicTable.addToolTip', {item: name}) }}</q-toolbar-title>
+        </q-toolbar>
+        <q-card-section>
+          <div
+            v-for="field in formProps.fields"
+            :key="field.name"
+            :style="field.style"
+            class="column inline"
+          >
+            <q-input
+              :autofocus="field.autofocus"
+              :clearable="field.clearable"
+              :disable="btnLoading"
+              :label="field.label"
+              :type="field.type"
+              :autogrow="field.autogrow"
+              bottom-slots
+              square
+              v-model="formData[field.name]"
+            >
+              <!-- <template v-slot:prepend>
+              <q-icon :name="field.icon" />
+              </template>-->
+            </q-input>
+          </div>
+        </q-card-section>
+        <!--  <q-separator /> -->
+        <q-card-actions align="right">
+          <q-btn
+            :disable="btnLoading"
+            color="primary"
+            label="İptal"
+            @click.prevent="hideResourceForm"
+          />
+          <q-btn
+            :loading="btnLoading"
+            color="primary"
+            label="Kaydet"
+            @click.prevent="handleSubmit"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <!-- Delete Confirm -->
-    <q-dialog v-if="selected.length == 1" v-model="confirm" persistent>
+    <q-dialog v-if="isItemSelected" v-model="confirm" persistent>
       <q-card>
         <q-card-section class="row items-center">
           <q-icon name="error_outline" size="35px" color="negative" text-color="white" />
@@ -188,7 +251,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "DynamicTable",
@@ -218,6 +281,7 @@ export default {
   data() {
     return {
       fields: [],
+      formData: {},
       selectionCheckBox: false,
       resourceForm: false,
       btnLoading: false,
@@ -225,24 +289,38 @@ export default {
       search: "",
       selected: [],
       pagination: { rowsPerPage: 10, page: 1 },
-      createMenu: [
-        { icon: "photo_album", text: "Album" },
-        { icon: "people", text: "Shared Album" },
-        { icon: "movie", text: "Movie" },
-        { icon: "library_books", text: "Animation" },
-        { icon: "dashboard", text: "Collage" },
-        { icon: "book", text: "Photo book" }
+      visibleColumns: [],
+      separator: "horizontal",
+      separatorOptions: [
+        { label: this.$t("dynamicTable.horizontal"), value: "horizontal" },
+        { label: this.$t("dynamicTable.vertical"), value: "vertical" },
+        { label: this.$t("dynamicTable.cell"), value: "cell" },
+        { label: this.$t("dynamicTable.none"), value: "none" }
       ]
     };
   },
   methods: {
     ...mapActions("resource", {
+      setFormFormProps: "setFormFormProps",
+      storeItem: "storeItem",
       deleteItem: "deleteItem"
     }),
 
     /** İtem Ekle/Düzenle Formunu Aç */
-    toggleResourceForm() {
-     this.resourceForm = true;
+    showResourceForm() {
+      this.setFormFormProps({ jsonName: this.url });
+      this.resourceForm = true;
+    },
+
+    /** İtem Ekle/Düzenle Formunu Kapat ve Temizle */
+    hideResourceForm() {
+      this.formData = Object.assign({});
+      this.resourceForm = false;
+    },
+
+    /** Formu Gönder */
+    handleSubmit() {
+      this.storeItem({ url: this.url, data: this.formData });
     },
 
     /** Silme işlemi onay göster */
@@ -263,6 +341,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      formProps: state => state.resource.formProps
+    }),
     /** Seçilen İtem var mı diye bak */
     isItemSelected() {
       if (this.selected.length > 0) {
@@ -271,6 +352,14 @@ export default {
         return false;
       }
     }
+  },
+  mounted() {
+    this.visibleColumns = this.columns.map(v => {
+      if (v.hideonload) {
+        return;
+      }
+      return v.name;
+    });
   }
 };
 </script>

@@ -64,19 +64,6 @@
                     </template>
                   </q-input>
                 </q-card-section>
-                <!-- <q-card-section>
-                  <div class="text-center q-pa-md q-gutter-md">
-                    <q-btn round color="indigo-7">
-                      <q-icon name="fab fa-facebook-f" size="1.2rem" />
-                    </q-btn>
-                    <q-btn round color="red-8">
-                      <q-icon name="fab fa-google-plus-g" size="1.2rem" />
-                    </q-btn>
-                    <q-btn round color="light-blue-5">
-                      <q-icon name="fab fa-twitter" size="1.2rem" />
-                    </q-btn>
-                  </div>
-                </q-card-section>-->
                 <q-card-actions class="q-px-lg">
                   <q-toggle
                     v-if="isFormLogin"
@@ -106,10 +93,12 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "PageLogin",
   data() {
     return {
+      getCookie: this.$q.cookies.get('larautomation_session'),
       url: "/login",
       formText: "Giriş",
       toolTip: "Bize Katılın",
@@ -136,6 +125,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions("auth", {
+      loginOrRegister: "loginOrRegister"
+    }),
     changeForm() {
       if (this.url == "/login") {
         this.url = "/register";
@@ -150,7 +142,7 @@ export default {
       }
     },
     handleSubmit() {
-      alert(this.formData.email);
+      this.loginOrRegister({ url: this.url, data: this.formData });
     }
   },
   computed: {
@@ -199,8 +191,9 @@ export default {
   transition: all 0.4s ease;
 }
 
-.formbtn
-  transition position 0.4s ease
+.formbtn {
+  transition: position 0.4s ease;
+}
 
 .lgn, .reg {
   z-index: -1;

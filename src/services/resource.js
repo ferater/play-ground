@@ -36,7 +36,7 @@ export default {
     },
 
 
-    fetchJson(jsonurl) {
-      return fetch('statics/' + jsonurl + '.json');
+    fetchJson(query) {
+      return fetch('statics/' + query.jsonName + '.json');
     }
 }

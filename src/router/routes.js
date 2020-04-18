@@ -21,7 +21,7 @@ const routes = [
       {
         path: "",
         name: "dashboard",
-        meta: { label: "home", icon: "view_day" },
+        meta: { label: "home", icon: "las la-atom" },
         component: () => import("pages/Index.vue")
       },
       {

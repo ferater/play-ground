@@ -1,13 +1,16 @@
 {
-  "title": "addProduct",
-  "form": [
+  "style": {
+    "width": "600px"
+  },
+  "fields": [
     {
       "name": "code",
       "type": "text",
       "label": "Ürün Kodu",
       "icon": "code",
       "clearable": true,
-      "autofocus": true
+      "autofocus": true,
+      "style": { "width": "250px", "margin-right": "30px" }
     },
     {
       "name": "barcode",
@@ -15,30 +18,15 @@
       "label": "Ürün Barkodu",
       "icon": "code",
       "clearable": false,
-      "autofocus": true
+      "style": { "width": "250px"}
     },
     {
       "name": "name",
       "type": "text",
       "label": "Ürün Adı",
       "icon": "dns",
-      "clearable": true
-    },
-    {
-      "name": "shelf_life",
-      "type": "number",
-      "label": "Raf Ömrü",
-      "icon": "code",
-      "clearable": false,
-      "autofocus": true
-    },
-    {
-      "name": "min_threshold",
-      "type": "number",
-      "label": "Min Stok Miktarı",
-      "icon": "code",
-      "clearable": false,
-      "autofocus": true
+      "clearable": true,
+      "style": { "width": "530px", "margin-right": "30px" }
     },
     {
       "name": "unit_amount",
@@ -46,7 +34,31 @@
       "label": "Varsayılan Miktar",
       "icon": "code",
       "clearable": false,
-      "autofocus": true
+      "style": { "width": "155px", "margin-right": "30px" }
+    },
+    {
+      "name": "min_threshold",
+      "type": "number",
+      "label": "Min Stok Miktarı",
+      "icon": "code",
+      "clearable": false,
+      "style": { "width": "155px", "margin-right": "30px" }
+    },
+    {
+      "name": "shelf_life",
+      "type": "number",
+      "label": "Raf Ömrü",
+      "icon": "code",
+      "clearable": false,
+      "style": { "width": "155px", "margin-right": "30px" }
+    },
+    {
+      "name": "unit_id",
+      "type": "number",
+      "label": "Unit ID",
+      "icon": "code",
+      "clearable": false,
+      "style": { "width": "155px", "margin-right": "30px" }
     },
     {
       "name": "category_id",
@@ -54,15 +66,16 @@
       "label": "Kategori ID",
       "icon": "code",
       "clearable": false,
-      "autofocus": true
+      "style": { "width": "155px", "margin-right": "30px" }
     },
     {
-      "name": "unit_id",
-      "type": "number",
-      "label": "Birim ID",
+      "name": "note",
+      "type": "textarea",
+      "label": "Notlar",
       "icon": "code",
+      "autogrow": true,
       "clearable": false,
-      "autofocus": true
+      "style": { "width": "340px" }
     }
   ],
   "selects": [

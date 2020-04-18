@@ -13,7 +13,17 @@ export async function getItemList(context, query) {
     });
 }
 
-/** İtem Formu Göster/Gizle */
+/** store item */
+export async function storeItem(context, requestData) {
+  return await resource
+    .storeItem(requestData)
+    .then(res => {
+      console.log("storeItem (Actions, Then) :", res);
+    })
+    .catch(err => {
+      console.log("storeItem (Catch, Then) :", err);
+    });
+}
 
 /** İtem Sil */
 export async function deleteItem(context, query) {
@@ -21,9 +31,19 @@ export async function deleteItem(context, query) {
     .deleteItem(query)
     .then(res => {
       context.dispatch("getItemList", { url: query.url });
-      console.log("deleteItem(Actions, Then): ", res.data);
+      console.log("deleteItem (Actions, Then): ", res.data);
     })
     .catch(err => {
-      console.log("deleteItem(Actions, catch): ", err.response);
+      console.log("deleteItem (Actions, catch): ", err.response);
     });
+}
+
+/** Form alanlarını ayarla */
+export async function setFormFormProps(context, query) {
+  return await resource.fetchJson(query).then(res =>
+    res.json().then(json => {
+      console.log(json);
+      context.commit("setItemList", { url: "formProps", data: json });
+    })
+  );
 }

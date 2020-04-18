@@ -27,7 +27,8 @@
             align: "left",
             field: row => row.data.code,
             format: val => `${val}`,
-            sortable: true
+            sortable: true,
+            disable: true,
           },
           {
             name: "barcode",

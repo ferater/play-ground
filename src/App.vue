@@ -8,13 +8,13 @@
 import { mapActions } from "vuex";
 export default {
   name: "App",
-  methods: {
+   methods: {
     ...mapActions("auth", {
-      getCookie: "getCookie"
+      checkLoggedIn: "checkLoggedIn"
     }),
   },
-  created() {
-    this.getCookie();
-  }
+  /* created() {
+    this.checkLoggedIn();
+  }  */
 };
 </script>

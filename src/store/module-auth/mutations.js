@@ -1,4 +1,3 @@
-/*
-export function someMutation (state) {
+export function setLoggedIn(state, payload) {
+  state.isLoggedIn = payload;
 }
-*/

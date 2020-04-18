@@ -15,11 +15,10 @@
 .q-dialog__inner > div
   overflow visible
 
-.card-table-title
+.card-table-title, .card-form-title
   position absolute
-  top -15px
   height 50px
-  border-radius 3px
+  border-radius 0 3px 3px 3px
   box-shadow 2px 4px 6px 1px $cardTitleShadow
   background $cardTitle
   padding 0 10px !important
@@ -29,6 +28,40 @@
   color #fff
   font-family -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
   font-weight bold
+  overflow visible
+
+.card-form-title
+  top 18px
+  left -20px
+
+  &:before
+    position absolute
+    top -15px
+    content ''
+    left 0
+    width 0
+    height 0
+    border-top 15px solid transparent
+    border-right-color orange !important
+    border-right 20px solid transparent
+    background rgba(0, 0, 0, 0) !important
+
+.card-table-title
+  top -18px
+  left 20px
+  z-index 999
+
+  &:before
+    position absolute
+    top 0
+    content ''
+    left -20px
+    width 0
+    height 0
+    border-top 20px solid transparent
+    border-right-color orange !important
+    border-right 20px solid transparent
+    background rgba(0, 0, 0, 0) !important
 
   i
     font-size 35px
@@ -303,4 +336,9 @@
   background-color $primaryBtn
 
 .resource-form-full-height
-  padding 0!important
+  padding 15px 0 0 0 !important
+  max-height 100vh !important
+  top 0
+
+.resource-form
+  max-width 100vw !important

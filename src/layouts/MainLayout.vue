@@ -93,7 +93,7 @@
             <q-badge color="red" floating text-color="white">2</q-badge>
             <q-tooltip>Notifications</q-tooltip>
           </q-btn>
-          <q-btn flat round>
+          <q-btn flat round @click="logOut">
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png"/>
             </q-avatar>
@@ -272,6 +272,7 @@
 
 <script>
   import routes from "../router/routes";
+  import { mapActions } from 'vuex';
   export default {
     name: "GooglePhotosLayout",
     data() {
@@ -307,5 +308,10 @@
         ]
       };
     },
+    methods: {
+      ...mapActions('auth', {
+        logOut: 'logOut'
+      })
+    }
   }
 </script>
