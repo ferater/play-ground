@@ -98,7 +98,7 @@ export default {
   name: "PageLogin",
   data() {
     return {
-      getCookie: this.$q.cookies.get('larautomation_session'),
+      getCookie: this.$q.cookies.get("larautomation_session"),
       url: "/login",
       formText: "Giriş",
       toolTip: "Bize Katılın",
@@ -126,7 +126,8 @@ export default {
   },
   methods: {
     ...mapActions("auth", {
-      loginOrRegister: "loginOrRegister"
+      loginOrRegister: "loginOrRegister",
+      checkLoggedIn: "checkLoggedIn"
     }),
     changeForm() {
       if (this.url == "/login") {
@@ -158,6 +159,9 @@ export default {
       }
       return false;
     }
+  },
+  created() {
+    this.checkLoggedIn();
   }
 };
 </script>

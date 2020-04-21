@@ -8,13 +8,6 @@
 import { mapActions } from "vuex";
 export default {
   name: "App",
-   methods: {
-    ...mapActions("auth", {
-      checkLoggedIn: "checkLoggedIn"
-    }),
-  },
-  /* created() {
-    this.checkLoggedIn();
-  }  */
+  methods: {}
 };
 </script>

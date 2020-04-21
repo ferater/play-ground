@@ -10,12 +10,11 @@ export async function getCookie() {
 
 export function checkLoggedIn(context) {
   const user = localStorage.getItem("user");
-  const authUser = context.dispatch("getAuthUser");
-  if (user.email == authUser.email) {
-    console.log("checkLoggedIn: Aynılar");
-  }else {
-    console.log('sadsadasdas');
-    
+  if (user) {
+    console.log("checkLoggedIn: Girilmiş");
+    this.$router.push({ name: "home" });
+  } else {
+    console.log("girilmemiş");
   }
 }
 
@@ -25,8 +24,7 @@ export function loginOrRegister(context, resource) {
     return auth
       .loginOrRegister(resource)
       .then(res => {
-        context.dispatch("getAuthUser").then(res => {
-          context.dispatch("setLocalStorageUser", res);
+        context.dispatch("getAuthUser").then(() => {
           context.dispatch("setLocalStorageCookie");
         });
         console.log("loginOrRegister (Actions, Then):", res);
@@ -46,15 +44,16 @@ export async function logOut(context) {
 }
 
 /** Giriş yapan Kullanıcı bilgisini çek */
-export async function getAuthUser() {
-  return auth.getAuthUser().then(res => {
-    console.log("getAuthUser (Actions, Then) :", JSON.stringify(res.data));
-    return JSON.stringify(res.data);
-  })
-  .then(err => {
-    console.log("getAuthUser (Actions, Catch) :", JSON.stringify(res.data));
-    
-  });
+export async function getAuthUser(context) {
+  return auth
+    .getAuthUser()
+    .then(res => {
+      context.dispatch("setLocalStorageUser", res.data);
+      console.log("getAuthUser (Actions, Then) :", res.data);
+    })
+    .then(err => {
+      console.log("getAuthUser (Actions, Catch) :", res.data);
+    });
 }
 
 /** çerezi localsotrage'a yaz */
@@ -79,7 +78,7 @@ export function setLocalStorageUser(context, user) {
   if (localStorageUser) {
     console.log("setLocalStorageUser (if): ", localStorageUser);
   } else {
-    localStorageUser = localStorage.setItem("user", user);
+    localStorageUser = localStorage.setItem("user", JSON.stringify(user));
     console.log("setLocalStorageUser (else): ", localStorageUser);
   }
 }

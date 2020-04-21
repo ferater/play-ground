@@ -3,6 +3,7 @@ export default {
     home: 'Anasayfa',
     users: 'Kullanıcılar',
     products: 'Ürünler',
+    login: "Giriş"
   },
   resourceForm: {
     addUser: "Kullanıcı Ekle",

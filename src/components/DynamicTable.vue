@@ -116,6 +116,7 @@
           no-wrap
           rounded
           v-if="$q.screen.gt.xs"
+          @click="showResourceForm"
         >
           <q-tooltip
             :offset="[5, 5]"
@@ -177,18 +178,18 @@
               <span
                 v-if="col.value.length > 30"
               >{{ col.value | readMore(25, '...') | uppercaseFirst }}</span>
-              <span v-else>{{ col.value | uppercaseFirst }}</span>
+              <span v-else>{{ col.value }}</span>
             </q-td>
           </q-tr>
         </template>
       </q-table>
     </q-card>
-    <span>Selected : {{isItemSelected}}</span>
+    <span v-if="isItemSelected">Selected : {{isItemSelected}} {{selected[0].data}}</span>
     <!-- Resource Form -->
-    <q-dialog position="top" v-model="resourceForm">
+    <q-dialog position="top" v-model="resourceForm" @escape-key="hideResourceForm">
       <q-card class="resource-form resource-form-full-height" :style="formProps.style">
         <q-toolbar>
-          <q-toolbar-title class="card-form-title">{{ $t('dynamicTable.addToolTip', {item: name}) }}</q-toolbar-title>
+          <q-toolbar-title class="card-form-title">{{ formTitle }}</q-toolbar-title>
         </q-toolbar>
         <q-card-section>
           <div
@@ -207,11 +208,13 @@
               bottom-slots
               square
               v-model="formData[field.name]"
+              v-validate="'required|alpha'"
             >
               <!-- <template v-slot:prepend>
               <q-icon :name="field.icon" />
               </template>-->
             </q-input>
+            <span v-if="errors.has('name')">{{ errors.first('name') }}</span>
           </div>
         </q-card-section>
         <!--  <q-separator /> -->
@@ -283,6 +286,7 @@ export default {
       fields: [],
       formData: {},
       selectionCheckBox: false,
+      formTitle: this.$t("dynamicTable.addToolTip", { item: this.name }),
       resourceForm: false,
       btnLoading: false,
       confirm: false,
@@ -303,24 +307,48 @@ export default {
     ...mapActions("resource", {
       setFormFormProps: "setFormFormProps",
       storeItem: "storeItem",
+      updateItem: "updateItem",
       deleteItem: "deleteItem"
     }),
 
     /** İtem Ekle/Düzenle Formunu Aç */
     showResourceForm() {
+      if (this.isItemSelected) {
+        this.formTitle = this.$t("dynamicTable.editToolTip", {
+          item: this.name
+        });
+        this.formData = Object.assign(this.formData, this.selected[0].data);
+      } else {
+        this.formTitle = this.$t("dynamicTable.addToolTip", {
+          item: this.name
+        });
+      }
       this.setFormFormProps({ jsonName: this.url });
       this.resourceForm = true;
     },
 
     /** İtem Ekle/Düzenle Formunu Kapat ve Temizle */
     hideResourceForm() {
-      this.formData = Object.assign({});
       this.resourceForm = false;
     },
 
     /** Formu Gönder */
     handleSubmit() {
-      this.storeItem({ url: this.url, data: this.formData });
+      if (this.formData.id !== undefined) {
+        this.updateItem({ url: this.url, data: this.formData }).then(() => {
+          console.log(
+            "handleSubmit (DynamicTable, Update, Then) :",
+            this.formData
+          );
+          this.selected = [];
+          this.hideResourceForm();
+        });
+      } else {
+        this.storeItem({ url: this.url, data: this.formData }).then(() => {
+          console.log("handleSubmit (DynamicTable, Store) :", this.formData);
+          this.hideResourceForm();
+        });
+      }
     },
 
     /** Silme işlemi onay göster */
@@ -360,6 +388,14 @@ export default {
       }
       return v.name;
     });
+  },
+  watch: {
+    resourceForm: function() {
+      if (!this.resourceForm) {
+        this.formData = Object.assign({});
+        console.log("hideResourceForm : Form temizlendi...");
+      }
+    }
   }
 };
 </script>

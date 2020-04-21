@@ -1,17 +1,28 @@
 {
-    "title": "addUser",
-  "form": [
+  "style": {
+    "width": "600px"
+  },
+  "fields": [
     {
       "name": "name",
       "type": "text",
       "label": "Ad soyad",
-      "icon": "people"
+      "icon": "people",
+      "style": { "width": "250px", "margin-right": "30px" }
     },
     {
       "name": "email",
       "type": "email",
       "label": "E-Posta Adresi",
-      "icon": "mail"
+      "icon": "mail",
+      "style": { "width": "250px", "margin-right": "30px" }
+    },
+    {
+      "name": "password",
+      "type": "password",
+      "label": "Parola",
+      "icon": "mail",
+      "style": { "width": "250px", "margin-right": "30px" }
     }
   ]
 }

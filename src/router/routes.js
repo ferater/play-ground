@@ -35,6 +35,12 @@ const routes = [
         name: "products",
         meta: { label: "products", icon: "donut_large" },
         component: () => import("pages/Products.vue")
+      },
+      {
+        path: "/login",
+        name: "login",
+        meta: { label: "login", icon: "las la-sign-in-alt" },
+        component: () => import("pages/Login.vue")
       }
     ]
   },
