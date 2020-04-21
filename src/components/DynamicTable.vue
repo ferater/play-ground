@@ -34,7 +34,7 @@
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">
             <q-item-section>
-              <q-item-label>{{scope.opt.label}}</q-item-label>
+              <q-item-label>{{ scope.opt.label }}</q-item-label>
             </q-item-section>
             <q-item-section side>
               <q-toggle v-model="visibleColumns" :val="scope.opt.name" color="secondary" />
@@ -85,7 +85,7 @@
           <q-tooltip
             :offset="[5, 5]"
             content-class="bg-amber text-black shadow-4"
-          >{{ $t('dynamicTable.addToolTip', {item: name}) }}</q-tooltip>
+          >{{ $t("dynamicTable.addToolTip", { item: name }) }}</q-tooltip>
         </q-btn>
       </div>
       <!-- Göster Düzenle  Sil Butonları -->
@@ -104,7 +104,7 @@
           <q-tooltip
             :offset="[5, 5]"
             content-class="bg-amber text-black shadow-4"
-          >{{ $t('dynamicTable.detailToolTip', {item: name}) }}</q-tooltip>
+          >{{ $t("dynamicTable.detailToolTip", { item: name }) }}</q-tooltip>
         </q-btn>
         <q-btn
           :label="$t('dynamicTable.edit')"
@@ -121,7 +121,7 @@
           <q-tooltip
             :offset="[5, 5]"
             content-class="bg-amber text-black shadow-4"
-          >{{ $t('dynamicTable.editToolTip', {item: name}) }}</q-tooltip>
+          >{{ $t("dynamicTable.editToolTip", { item: name }) }}</q-tooltip>
         </q-btn>
         <q-btn
           :label="$t('dynamicTable.delete')"
@@ -138,7 +138,7 @@
           <q-tooltip
             :offset="[5, 5]"
             content-class="bg-amber text-black shadow-4"
-          >{{ $t('dynamicTable.deleteToolTip', {item: name}) }}</q-tooltip>
+          >{{ $t("dynamicTable.deleteToolTip", { item: name }) }}</q-tooltip>
         </q-btn>
       </div>
     </div>
@@ -146,7 +146,7 @@
       <q-toolbar>
         <q-toolbar-title class="card-table-title">
           <q-icon :name="icon"></q-icon>
-          <span style="margin-left:5px">{{ $t(url + '.' + url) }}</span>
+          <span style="margin-left:5px">{{ $t(url + "." + url) }}</span>
         </q-toolbar-title>
         <!--       <q-space />-->
         <!--      <q-btn flat round dense icon="add_circle" class="benim" />-->
@@ -175,65 +175,82 @@
               <q-checkbox color="deep-orange" v-if="selectionCheckBox" v-model="props.selected" />
             </q-td>
             <q-td :key="col.name" :props="props" v-for="col in props.cols">
-              <span
-                v-if="col.value.length > 30"
-              >{{ col.value | readMore(25, '...') | uppercaseFirst }}</span>
+              <span v-if="col.value.length > 30">
+                {{
+                col.value | readMore(25, "...") | uppercaseFirst
+                }}
+              </span>
               <span v-else>{{ col.value }}</span>
             </q-td>
           </q-tr>
         </template>
       </q-table>
     </q-card>
-    <span v-if="isItemSelected">Selected : {{isItemSelected}} {{selected[0].data}}</span>
+    <span v-if="isItemSelected">Selected : {{ isItemSelected }} {{ selected[0].data }}</span>
     <!-- Resource Form -->
-    <q-dialog position="top" v-model="resourceForm" @escape-key="hideResourceForm">
-      <q-card class="resource-form resource-form-full-height" :style="formProps.style">
-        <q-toolbar>
-          <q-toolbar-title class="card-form-title">{{ formTitle }}</q-toolbar-title>
-        </q-toolbar>
-        <q-card-section>
-          <div
-            v-for="field in formProps.fields"
-            :key="field.name"
-            :style="field.style"
-            class="column inline"
-          >
-            <q-input
-              :autofocus="field.autofocus"
-              :clearable="field.clearable"
-              :disable="btnLoading"
-              :label="field.label"
-              :type="field.type"
-              :autogrow="field.autogrow"
-              bottom-slots
-              square
-              v-model="formData[field.name]"
-              v-validate="'required|alpha'"
+    <ValidationObserver v-slot="{ invalid }">
+      <q-dialog position="top" v-model="resourceForm" @escape-key="hideResourceForm">
+        <q-card class="resource-form resource-form-full-height" :style="formProps.style">
+          <q-toolbar>
+            <q-toolbar-title class="card-form-title">
+              {{
+              formTitle
+              }}
+            </q-toolbar-title>
+          </q-toolbar>
+          <q-card-section>
+            <div
+              v-for="field in formProps.fields"
+              :key="field.name"
+              :style="field.style"
+              class="column inline"
             >
-              <!-- <template v-slot:prepend>
+              <ValidationProvider
+                :rules="field.rules"
+                :name="field.label"
+                :bails="false"
+                v-slot="{ errors, invalid, validated }"
+              >
+                <q-input
+                  :autofocus="field.autofocus"
+                  :clearable="field.clearable"
+                  :disable="btnLoading"
+                  :label="field.label"
+                  :type="field.type"
+                  :autogrow="field.autogrow"
+                  :error="invalid && validated"
+                  :error-message="errors[0]"
+                  bottom-slots
+                  square
+                  v-model="formData[field.name]"
+                >
+                  <!-- <template v-slot:prepend>
               <q-icon :name="field.icon" />
-              </template>-->
-            </q-input>
-            <span v-if="errors.has('name')">{{ errors.first('name') }}</span>
-          </div>
-        </q-card-section>
-        <!--  <q-separator /> -->
-        <q-card-actions align="right">
-          <q-btn
-            :disable="btnLoading"
-            color="primary"
-            label="İptal"
-            @click.prevent="hideResourceForm"
-          />
-          <q-btn
-            :loading="btnLoading"
-            color="primary"
-            label="Kaydet"
-            @click.prevent="handleSubmit"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+                  </template>-->
+                </q-input>
+              </ValidationProvider>
+              <!-- <span v-if="errors.has('name')">{{ errors.first('name') }}</span> -->
+            </div>
+          </q-card-section>
+          <!--  <q-separator /> -->
+          <q-card-actions align="right">
+            <q-btn
+              :disable="btnLoading"
+              color="primary"
+              label="İptal"
+              @click.prevent="hideResourceForm"
+            />
+            <q-btn
+              :loading="btnLoading"
+              color="primary"
+              label="Kaydet"
+              :disabled="invalid"
+              @click.prevent="handleSubmit"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    </ValidationObserver>
     <!-- Delete Confirm -->
     <q-dialog v-if="isItemSelected" v-model="confirm" persistent>
       <q-card>
@@ -241,7 +258,12 @@
           <q-icon name="error_outline" size="35px" color="negative" text-color="white" />
           <span
             class="q-ml-sm"
-            v-html="$t('dynamicTable.deleteConfirm', {item: name, name: selected[0].data.name})"
+            v-html="
+              $t('dynamicTable.deleteConfirm', {
+                item: name,
+                name: selected[0].data.name
+              })
+            "
           />
         </q-card-section>
         <q-card-actions align="right">
@@ -255,9 +277,13 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { ValidationObserver } from "vee-validate";
 
 export default {
   name: "DynamicTable",
+  components: {
+    ValidationObserver
+  },
   props: {
     name: {
       type: String
@@ -283,7 +309,7 @@ export default {
   },
   data() {
     return {
-      fields: [],
+      // fields: [],
       formData: {},
       selectionCheckBox: false,
       formTitle: this.$t("dynamicTable.addToolTip", { item: this.name }),

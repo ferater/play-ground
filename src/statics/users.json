@@ -15,6 +15,7 @@
       "type": "email",
       "label": "E-Posta Adresi",
       "icon": "mail",
+      "rules": "required|email",
       "style": { "width": "250px", "margin-right": "30px" }
     },
     {
