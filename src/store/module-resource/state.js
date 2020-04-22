@@ -3,5 +3,6 @@ export default function () {
     users: [],
     products: [],
     formProps: [],
+    isLoading: false,
   }
 }

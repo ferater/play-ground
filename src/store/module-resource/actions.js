@@ -3,14 +3,25 @@ import { Notify } from "quasar";
 
 /** İtemleri çek */
 export async function getItemList(context, query) {
+  context.dispatch("setIsLoading", true);
   return await resource
     .getItemList(query)
     .then(res => {
       context.commit("setItemList", { url: query.url, data: res.data });
+      setTimeout(() => {
+        context.dispatch("setIsLoading", false);
+      }, 300);
       console.log("getItemList(Actions, Then): ", query.url, res.data);
     })
     .catch(err => {
-      console.log("getItemList(Actions, Catch)", err.response);
+      setTimeout(() => {
+        context.dispatch("showNotify", {
+          res: err,
+          message: err.message
+        });
+        context.dispatch("setIsLoading", false);
+      }, 5000);
+      console.log("getItemList(Actions, Catch)", err);
     });
 }
 
@@ -83,9 +94,14 @@ export async function setFormFormProps(context, query) {
   );
 }
 
+/** notification */
 export function showNotify(context, data) {
   let type = "negative";
-  if (data.res.status == 200 || data.res.status == 201 || data.res.status == 204) {
+  if (
+    data.res.status == 200 ||
+    data.res.status == 201 ||
+    data.res.status == 204
+  ) {
     type = "positive";
   }
   Notify.create({
@@ -94,4 +110,9 @@ export function showNotify(context, data) {
     position: "bottom",
     message: data.message
   });
+}
+
+/** set isLoading */
+export function setIsLoading(context, isLoading) {
+  context.commit("setIsLoading", isLoading);
 }

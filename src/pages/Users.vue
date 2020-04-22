@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <dynamic-table :columns="columns" :data="users" :icon="icon" :url="url" :name="name"/>
+    <dynamic-table :columns="columns" :data="users" @refresh="getItemList({ url })" :icon="icon" :url="url" :name="name"/>
   </q-page>
 </template>
 

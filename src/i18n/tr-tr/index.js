@@ -18,6 +18,7 @@ export default {
     users: "Kullanıcılar",
   },
   dynamicTable: {
+    refreshToolTip: "Yeniden Yükle",
     addToolTip: "{item} Oluştur",
     detail: "Detaylar",
     detailToolTip: "{item} Detaylarını gör",

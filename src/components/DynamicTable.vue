@@ -1,14 +1,15 @@
 <template>
   <div>
-    <div class="actions-bar">
+    <div class="actions-bar" :class="{'column': !$q.screen.gt.xs}">
       <!-- Arama -->
       <q-input
         class="GPL__toolbar-input"
+        :style="!$q.screen.gt.xs ? 'width:80vw' : ''"
         dense
-        placeholder="Ara"
         rounded
         standout="bg-grey-3"
-        v-if="$q.screen.gt.xs"
+        placeholder="Ara"
+        
         v-model="search"
       >
         <template v-slot:append>
@@ -19,6 +20,7 @@
       <!--  -->
       <!-- Stun göster/gizle -->
       <q-select
+      v-if="$q.screen.gt.xs"
         v-model="visibleColumns"
         :options="columns"
         :display-value="$t('dynamicTable.columns')"
@@ -44,6 +46,7 @@
       </q-select>
       <!-- seperator select -->
       <q-select
+      v-if="$q.screen.gt.xs"
         v-model="separator"
         :options="separatorOptions"
         :display-value="$t('dynamicTable.borders')"
@@ -148,49 +151,82 @@
           <q-icon :name="icon"></q-icon>
           <span style="margin-left:5px">{{ $t(url + "." + url) }}</span>
         </q-toolbar-title>
-        <!--       <q-space />-->
-        <!--      <q-btn flat round dense icon="add_circle" class="benim" />-->
+        <q-space />
+        <q-btn
+          flat
+          round
+          dense
+          size="10px"
+          icon="las la-sync-alt"
+          :loading="isLoading"
+          @click="$emit('refresh')"
+        >
+       <!--  <template v-slot:loading>
+        <q-spinner-tail
+          color="black"
+          size="12px"
+        />
+      </template> -->
+          <q-tooltip
+            :offset="[5, 5]"
+            content-class="bg-amber text-black shadow-4"
+          >{{ $t("dynamicTable.refreshToolTip", { item: name }) }}</q-tooltip>
+        </q-btn>
+        <q-btn
+          round
+          flat
+          dense
+          size="10px"
+          :icon="expanded ? 'las la-angle-up' : 'las la-angle-down'"
+          @click="expanded = !expanded"
+        />
       </q-toolbar>
       <!-- Dinamik Tablo -->
-      <q-table
-        :columns="columns"
-        :data="data"
-        :filter="search"
-        :pagination.sync="pagination"
-        :selected.sync="selected"
-        :row-key="row => row.data.id"
-        :separator="separator"
-        :visible-columns="visibleColumns"
-        selection="single"
-      >
-        <!-- Tablo TR -->
-        <template v-slot:body="props">
-          <q-tr
-            :class="'cursor-pointer'"
-            :props="props"
-            @click.native="props.selected = !props.selected"
-          >
-            <!-- Tablo TD -->
-            <q-td auto-width>
-              <q-checkbox color="deep-orange" v-if="selectionCheckBox" v-model="props.selected" />
-            </q-td>
-            <q-td :key="col.name" :props="props" v-for="col in props.cols">
-              <span v-if="col.value.length > 30">
-                {{
-                col.value | readMore(25, "...") | uppercaseFirst
-                }}
-              </span>
-              <span v-else>{{ col.value }}</span>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
+      <q-slide-transition>
+        <q-table
+          v-show="expanded"
+          :columns="columns"
+          :data="data"
+          :filter="search"
+          :pagination.sync="pagination"
+          :selected.sync="selected"
+          :row-key="row => row.data.id"
+          :separator="separator"
+          :visible-columns="visibleColumns"
+          selection="single"
+        >
+          <!-- <template v-slot:top-right>
+        <q-icon name="las la-sync-alt" />
+          </template>-->
+          <!-- Tablo TR -->
+          <template v-slot:body="props">
+            <q-tr
+              :class="'cursor-pointer'"
+              :props="props"
+              @click.native="props.selected = !props.selected"
+            >
+              <!-- Tablo TD -->
+              <q-td auto-width>
+                <q-checkbox color="deep-orange" v-if="selectionCheckBox" v-model="props.selected" />
+              </q-td>
+              <q-td :key="col.name" :props="props" v-for="col in props.cols">
+                <span v-if="col.value.length > 30">
+                  {{
+                  col.value | readMore(25, "...") | uppercaseFirst
+                  }}
+                </span>
+                <span v-else>{{ col.value }}</span>
+              </q-td>
+            </q-tr>
+          </template>
+        </q-table>
+      </q-slide-transition>
     </q-card>
     <span v-if="isItemSelected">Selected : {{ isItemSelected }} {{ selected[0].data }}</span>
     <!-- Resource Form -->
     <ValidationObserver v-slot="{ invalid }">
       <q-dialog position="top" v-model="resourceForm" @escape-key="hideResourceForm">
-        <q-card class="resource-form resource-form-full-height" :style="formProps.style">
+        <q-card class="resource-form" :style="formProps.style">
           <q-toolbar>
             <q-toolbar-title class="card-form-title">
               {{
@@ -203,7 +239,7 @@
               v-for="field in formProps.fields"
               :key="field.name"
               :style="field.style"
-              class="column inline"
+              class="column inline q-pl-md"
             >
               <ValidationProvider
                 :rules="field.rules"
@@ -220,9 +256,9 @@
                   :autogrow="field.autogrow"
                   :error="invalid && validated"
                   :error-message="errors[0]"
-                  bottom-slots
-                  square
                   v-model="formData[field.name]"
+                  dense
+                  square
                 >
                   <!-- <template v-slot:prepend>
               <q-icon :name="field.icon" />
@@ -316,6 +352,7 @@ export default {
       resourceForm: false,
       btnLoading: false,
       confirm: false,
+      expanded: true,
       search: "",
       selected: [],
       pagination: { rowsPerPage: 10, page: 1 },
@@ -396,8 +433,10 @@ export default {
   },
   computed: {
     ...mapState({
-      formProps: state => state.resource.formProps
+      formProps: state => state.resource.formProps,
+      isLoading: state => state.resource.isLoading
     }),
+
     /** Seçilen İtem var mı diye bak */
     isItemSelected() {
       if (this.selected.length > 0) {
