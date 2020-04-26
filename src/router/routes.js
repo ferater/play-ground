@@ -37,6 +37,12 @@ const routes = [
         component: () => import("pages/Products.vue")
       },
       {
+        path: "/categories",
+        name: "categories",
+        meta: { label: "categories", icon: "las la-dragon" },
+        component: () => import("pages/Categories.vue")
+      },
+      {
         path: "/login",
         name: "login",
         meta: { label: "login", icon: "las la-sign-in-alt" },

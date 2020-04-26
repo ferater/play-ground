@@ -10,7 +10,7 @@
       "icon": "code",
       "clearable": true,
       "autofocus": true,
-      "rules": "required|min:3",
+      "rules": "required",
       "style": { "width": "250px", "margin-right": "30px" }
     },
     {
@@ -19,7 +19,6 @@
       "label": "Ürün Barkodu",
       "icon": "code",
       "clearable": false,
-      "rules": "required|min:13",
       "style": { "width": "250px"}
     },
     {
@@ -79,6 +78,10 @@
       "clearable": false,
       "style": { "width": "340px" }
     }
+  ],
+  "buttons": [
+    {"name": "categories", "label": "Kategoriler"},
+    {"name": "units", "label": "Birimler"}
   ],
   "selects": [
     {"name":"categories", "label": "Ürün Kategorisi", "clearable": true},

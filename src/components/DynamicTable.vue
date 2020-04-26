@@ -9,7 +9,6 @@
         rounded
         standout="bg-grey-3"
         placeholder="Ara"
-        
         v-model="search"
       >
         <template v-slot:append>
@@ -20,7 +19,7 @@
       <!--  -->
       <!-- Stun göster/gizle -->
       <q-select
-      v-if="$q.screen.gt.xs"
+        v-if="$q.screen.gt.xs"
         v-model="visibleColumns"
         :options="columns"
         :display-value="$t('dynamicTable.columns')"
@@ -46,7 +45,7 @@
       </q-select>
       <!-- seperator select -->
       <q-select
-      v-if="$q.screen.gt.xs"
+        v-if="$q.screen.gt.xs"
         v-model="separator"
         :options="separatorOptions"
         :display-value="$t('dynamicTable.borders')"
@@ -71,7 +70,7 @@
       </q-select>
       <q-space />
       <!-- Ekle Butonu -->
-      <div v-if="!isItemSelected" class="add">
+      <div v-if="!isItemSelected && ! resourceForm" class="add">
         <q-btn
           v-if="$q.screen.gt.xs"
           :label="name"
@@ -92,7 +91,7 @@
         </q-btn>
       </div>
       <!-- Göster Düzenle  Sil Butonları -->
-      <div v-else class="actions">
+      <div v-if="isItemSelected && ! resourceForm" class="actions">
         <q-btn
           :label="$t('dynamicTable.detail')"
           class="q-py-xs q-px-sm"
@@ -161,12 +160,12 @@
           :loading="isLoading"
           @click="$emit('refresh')"
         >
-       <!--  <template v-slot:loading>
+          <!--  <template v-slot:loading>
         <q-spinner-tail
           color="black"
           size="12px"
         />
-      </template> -->
+          </template>-->
           <q-tooltip
             :offset="[5, 5]"
             content-class="bg-amber text-black shadow-4"
@@ -254,19 +253,19 @@
                   :label="field.label"
                   :type="field.type"
                   :autogrow="field.autogrow"
-                  :error="invalid && validated"
-                  :error-message="errors[0]"
+                  :error="invalid && validated || formErrors.length >= 1 && Object.keys(formErrors[0]).includes(field.name)"
+                  :error-message="formErrors.length >= 1 && Object.keys(formErrors[0]).includes(field.name) ? formErrors[0][field.name][0] : errors[0]"
                   v-model="formData[field.name]"
                   dense
                   square
                 >
                   <!-- <template v-slot:prepend>
-              <q-icon :name="field.icon" />
+                    <q-icon :name="field.icon" />
                   </template>-->
                 </q-input>
               </ValidationProvider>
-              <!-- <span v-if="errors.has('name')">{{ errors.first('name') }}</span> -->
             </div>
+            <q-separator />
           </q-card-section>
           <!--  <q-separator /> -->
           <q-card-actions align="right">
@@ -308,17 +307,23 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <select-box
+      clearable
+      :label="name"
+      :url="url"
+    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import { ValidationObserver } from "vee-validate";
+import SelectBox from 'components/SelectBox'
 
 export default {
   name: "DynamicTable",
   components: {
-    ValidationObserver
+    ValidationObserver, SelectBox
   },
   props: {
     name: {
@@ -349,8 +354,6 @@ export default {
       formData: {},
       selectionCheckBox: false,
       formTitle: this.$t("dynamicTable.addToolTip", { item: this.name }),
-      resourceForm: false,
-      btnLoading: false,
       confirm: false,
       expanded: true,
       search: "",
@@ -369,12 +372,13 @@ export default {
   methods: {
     ...mapActions("resource", {
       setFormFormProps: "setFormFormProps",
+      setResourceForm: "setResourceForm",
       storeItem: "storeItem",
       updateItem: "updateItem",
       deleteItem: "deleteItem"
     }),
 
-    /** İtem Ekle/Düzenle Formunu Aç */
+    /** İtem Ekle/Düzenle Form içeriiğini al ve aç, */
     showResourceForm() {
       if (this.isItemSelected) {
         this.formTitle = this.$t("dynamicTable.editToolTip", {
@@ -387,30 +391,21 @@ export default {
         });
       }
       this.setFormFormProps({ jsonName: this.url });
-      this.resourceForm = true;
     },
 
     /** İtem Ekle/Düzenle Formunu Kapat ve Temizle */
     hideResourceForm() {
-      this.resourceForm = false;
+      this.setResourceForm(false);
     },
 
     /** Formu Gönder */
     handleSubmit() {
       if (this.formData.id !== undefined) {
         this.updateItem({ url: this.url, data: this.formData }).then(() => {
-          console.log(
-            "handleSubmit (DynamicTable, Update, Then) :",
-            this.formData
-          );
           this.selected = [];
-          this.hideResourceForm();
         });
       } else {
-        this.storeItem({ url: this.url, data: this.formData }).then(() => {
-          console.log("handleSubmit (DynamicTable, Store) :", this.formData);
-          this.hideResourceForm();
-        });
+        this.storeItem({ url: this.url, data: this.formData });
       }
     },
 
@@ -426,7 +421,7 @@ export default {
           this.selected = [];
           this.search = "";
           this.confirm = false;
-          console.log("deleteSelectedItem(DynamicTable, Then): Silme Başarılı");
+          console.log("deleteSelectedItem(DynamicTable, Then)");
         }
       );
     }
@@ -434,8 +429,20 @@ export default {
   computed: {
     ...mapState({
       formProps: state => state.resource.formProps,
-      isLoading: state => state.resource.isLoading
+      resourceForm: state => state.resource.resourceForm,
+      isLoading: state => state.resource.isLoading,
+      btnLoading: state => state.resource.btnLoading,
+      formErrors: state => state.resource.formErrors
     }),
+
+    resourceForm: {
+      get() {
+        return this.$store.state.resource.resourceForm;
+      },
+      set() {
+        this.hideResourceForm();
+      }
+    },
 
     /** Seçilen İtem var mı diye bak */
     isItemSelected() {
@@ -464,3 +471,5 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus" scoped></style>

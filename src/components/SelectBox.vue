@@ -7,6 +7,7 @@
     :options="items"
     @filter="filterFn"
     @filter-abort="abortFilterFn"
+    @input="$emit('setValue')"
     style="width: 250px"
     :clearable="clearable"
   >

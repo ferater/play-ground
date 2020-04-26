@@ -1,0 +1,15 @@
+{
+    "style": {
+      "width": "400px"
+    },
+    "fields": [
+      {
+        "name": "name",
+        "type": "text",
+        "label": "Kategori Adı",
+        "icon": "people",
+        "style": { "width": "350px"}
+      }
+    ]
+  }
+  

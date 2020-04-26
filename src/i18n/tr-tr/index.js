@@ -3,19 +3,20 @@ export default {
     home: 'Anasayfa',
     users: 'Kullanıcılar',
     products: 'Ürünler',
-    login: "Giriş"
+    categories: "Kategoriler",
+    login: "Giriş",
   },
-  resourceForm: {
-    addUser: "Kullanıcı Ekle",
-    addProduct: "Ürün Ekle"
+  users: {
+    user: "Kullanıcı",
+    users: "Kullanıcılar",
   },
   products: {
     product: "Ürün",
     products: "Ürünler",
   },
-  users: {
-    user: "Kullanıcı",
-    users: "Kullanıcılar",
+  categories: {
+    category: "Kategori",
+    categories: "Kategoriler",
   },
   dynamicTable: {
     refreshToolTip: "Yeniden Yükle",

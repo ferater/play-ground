@@ -27,42 +27,38 @@ export async function getItemList(context, query) {
 
 /** store item */
 export async function storeItem(context, resourceData) {
+  context.dispatch("setBtnLoading", true);
   return await resource
     .storeItem(resourceData)
     .then(res => {
+      context.dispatch("setBtnLoading", false);
       context.dispatch("getItemList", resourceData);
-      context.dispatch("showNotify", {
-        res: res,
-        message: "Başarılı şekide kaydedildi"
-      });
+      context.dispatch("showNotify", res);
+      context.dispatch("setResourceForm", false);
       console.log("storeItem (Actions, Then) :", res);
     })
     .catch(err => {
-      context.dispatch("showNotify", {
-        res: err,
-        message: "Kayıt sırasında sorun oluştu"
-      });
-      console.log("storeItem (Catch, Then) :", err);
+      context.dispatch("setBtnLoading", false);
+      context.dispatch("setFormErrors", Object.values(err.response.data));
+      console.log("storeItem (Catch, Then) :", err.response);
     });
 }
 
 /** Update İtem */
 export async function updateItem(context, resourceData) {
+  context.dispatch("setBtnLoading", true);
   return await resource
     .updateItem(resourceData)
     .then(res => {
+      context.dispatch("setBtnLoading", false);
       context.dispatch("getItemList", resourceData);
-      context.dispatch("showNotify", {
-        res: res,
-        message: "Başarılı şekide güncellendi"
-      });
+      context.dispatch("showNotify", res);
+      context.dispatch("setResourceForm", false);
       console.log("updateItem (Actions, Then)", res.data);
     })
     .catch(err => {
-      context.dispatch("showNotify", {
-        res: err,
-        message: "Gncelleme sırasında sorun oluştu"
-      });
+      context.dispatch("setBtnLoading", false);
+      context.dispatch("setFormErrors", Object.values(err.response.data));
       console.log("updateItem (Actions, Catch)", err);
     });
 }
@@ -73,13 +69,11 @@ export async function deleteItem(context, query) {
     .deleteItem(query)
     .then(res => {
       context.dispatch("getItemList", { url: query.url });
-      context.dispatch("showNotify", {
-        res: res,
-        message: "Başarılı şekide silindi"
-      });
-      console.log("deleteItem (Actions, Then): ", res.data);
+      context.dispatch("showNotify", res);
+      console.log("deleteItem (Actions, Then): ", res);
     })
     .catch(err => {
+      context.dispatch("showNotify", err.response);
       console.log("deleteItem (Actions, catch): ", err.response);
     });
 }
@@ -88,31 +82,49 @@ export async function deleteItem(context, query) {
 export async function setFormFormProps(context, query) {
   return await resource.fetchJson(query).then(res =>
     res.json().then(json => {
-      console.log(json);
       context.commit("setItemList", { url: "formProps", data: json });
+      context.dispatch("setResourceForm", true);
+      console.log(json);
     })
   );
 }
 
 /** notification */
-export function showNotify(context, data) {
+export function showNotify(context, res) {
+  console.log('showNotify : ',res);
+  
   let type = "negative";
-  if (
-    data.res.status == 200 ||
-    data.res.status == 201 ||
-    data.res.status == 204
-  ) {
+  let a = res.status.toString().charAt(0);
+  if (a == 2) {
     type = "positive";
   }
   Notify.create({
     type: type,
-    timeout: 3000,
+    timeout: 5000,
     position: "bottom",
-    message: data.message
+    html: true,
+    message: res.data.message
   });
 }
 
 /** set isLoading */
 export function setIsLoading(context, isLoading) {
   context.commit("setIsLoading", isLoading);
+}
+
+/** set resourceForm */
+export function setResourceForm(context, resourceForm) {
+  context.commit("setResourceForm", resourceForm);
+  context.dispatch("setFormErrors", []);
+  console.log("setResourceForm (Actions)");
+}
+
+/** set btnLoading */
+export function setBtnLoading(context, btnLoading) {
+  context.commit("setBtnLoading", btnLoading);
+}
+
+/** set formErrors */
+export function setFormErrors(context, formErrors) {
+  context.commit("setFormErrors", formErrors);
 }
