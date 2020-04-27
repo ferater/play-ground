@@ -70,22 +70,14 @@ export default {
   },
   computed: {
     nodeData() {
-      let a = [].concat(this.items);
-        a = a.map(x => {
-        let cat = {
-          id: x.data.id,
-          parent_id: x.data.parent_id,
-          name: x.data.name,
-          children: x.data.children
-        };
-        return cat
-      });
-        a.forEach(element => {
-        if (element.parent_id !== null) {
-          a.splice(a.indexOf(element), element.children.length);
+      let a = [].concat(this.items)
+      let b = [];
+      a.forEach(element => {
+        if(element.parent_id == null) {
+          b.push(element);
         }
       });
-      return a
+      return b;
     }
   }
 };

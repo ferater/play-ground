@@ -189,7 +189,7 @@
           :filter="search"
           :pagination.sync="pagination"
           :selected.sync="selected"
-          :row-key="row => row.data.id"
+          row-key="id"
           :separator="separator"
           :visible-columns="visibleColumns"
           selection="single"
@@ -221,7 +221,7 @@
         </q-table>
       </q-slide-transition>
     </q-card>
-    <span v-if="isItemSelected">Selected : {{ isItemSelected }} {{ selected[0].data }}</span>
+    <span v-if="isItemSelected">Selected : {{ isItemSelected }} {{ selected[0] }}</span>
     <!-- Resource Form -->
     <ValidationObserver v-slot="{ invalid }">
       <q-dialog position="top" v-model="resourceForm" @escape-key="hideResourceForm">
@@ -296,7 +296,7 @@
             v-html="
               $t('dynamicTable.deleteConfirm', {
                 item: name,
-                name: selected[0].data.name
+                name: selected[0].name
               })
             "
           />
@@ -416,7 +416,7 @@ export default {
 
     /** Seçilen İtemi Sil */
     deleteSelectedItem() {
-      this.deleteItem({ url: this.url, id: this.selected[0].data.id }).then(
+      this.deleteItem({ url: this.url, id: this.selected[0].id }).then(
         res => {
           this.selected = [];
           this.search = "";

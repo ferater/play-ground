@@ -25,7 +25,7 @@ export default {
           required: true,
           label: "Adı Soyadı",
           align: "left",
-          field: row => row.data.name,
+          field: row => row.name,
           format: val => `${val}`,
           sortable: true
         },
@@ -33,7 +33,7 @@ export default {
           name: "email",
           align: "left",
           label: "E-Posta Adresi",
-          field: row => row.data.email,
+          field: "email",
           sortable: true
         },
         {

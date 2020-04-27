@@ -94,10 +94,12 @@ export function showNotify(context, res) {
   console.log('showNotify : ',res);
   
   let type = "negative";
-  let a = res.status.toString().charAt(0);
+ if(res.status) {
+    let a = res.status.toString().charAt(0);
   if (a == 2) {
     type = "positive";
   }
+ }
   Notify.create({
     type: type,
     timeout: 5000,

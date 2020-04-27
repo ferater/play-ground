@@ -23,41 +23,33 @@ export default {
         {
           name: "code",
           required: true,
-          label: "Ürün Kodu",
+          label: "Ürün kodu",
           align: "left",
-          field: row => row.data.code,
+          field: row => row.code,
           format: val => `${val}`,
-          sortable: true,
-          disable: true
+          sortable: true
         },
         {
           name: "barcode",
           align: "left",
-          label: "Barkod Numarası",
-          field: row => row.data.barcode,
+          label: "Ürün Barkodu",
+          field: "barcode",
           sortable: true
         },
         {
-          name: "name",
-          align: "left",
-          label: "Ürün Adı",
-          field: row => row.data.name,
-          sortable: true
-        },
-        {
-          name: "shelf_life",
+          name: "self_life",
           align: "left",
           label: "Raf Ömrü",
-          field: row => row.data.shelf_life + " Yıl",
+          field: row => row.shelf_life + " Yıl",
           sortable: true
         },
         {
           name: "note",
           align: "left",
           label: "Notlar",
-          field: row => row.data.note,
+          field: "note",
           sortable: true
-        }
+        },
       ]
     };
   },
