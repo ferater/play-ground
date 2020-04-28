@@ -1,8 +1,23 @@
 <template>
   <div>
     <div class="actions-bar" :class="{'column': !$q.screen.gt.xs}">
+      <!-- Arama -->
+      <q-input
+        class="GPL__toolbar-input"
+        :style="!$q.screen.gt.xs ? 'width:80vw' : ''"
+        dense
+        rounded
+        standout="bg-grey-3"
+        placeholder="Ara"
+        v-model="search"
+      >
+        <template v-slot:append>
+          <q-icon name="search" v-if="search === ''" />
+          <q-icon @click="search = ''" class="cursor-pointer" name="clear" v-else />
+        </template>
+      </q-input>
       <q-space />
-      <div v-if="! resourceForm" class="add">
+      <div v-if="!isItemSelected && ! resourceForm" class="add">
         <q-btn
           v-if="$q.screen.gt.xs"
           :label="name"
@@ -22,6 +37,59 @@
           >{{ $t("dynamicTable.addToolTip", { item: name }) }}</q-tooltip>
         </q-btn>
       </div>
+      <!-- Göster Düzenle  Sil Butonları -->
+      <div v-if="isItemSelected && ! resourceForm" class="actions">
+        <q-btn
+          :label="$t('dynamicTable.detail')"
+          class="q-py-xs q-px-sm"
+          color="brand"
+          dense
+          icon="remove_red_eye"
+          no-caps
+          no-wrap
+          rounded
+          v-if="$q.screen.gt.xs"
+        >
+          <q-tooltip
+            :offset="[5, 5]"
+            content-class="bg-amber text-black shadow-4"
+          >{{ $t("dynamicTable.detailToolTip", { item: name }) }}</q-tooltip>
+        </q-btn>
+        <q-btn
+          :label="$t('dynamicTable.edit')"
+          class="q-py-xs q-px-sm q-ml-sm"
+          color="secondary"
+          dense
+          icon="edit"
+          no-caps
+          no-wrap
+          rounded
+          v-if="$q.screen.gt.xs"
+          @click="showResourceForm"
+        >
+          <q-tooltip
+            :offset="[5, 5]"
+            content-class="bg-amber text-black shadow-4"
+          >{{ $t("dynamicTable.editToolTip", { item: name }) }}</q-tooltip>
+        </q-btn>
+        <q-btn
+          :label="$t('dynamicTable.delete')"
+          class="q-py-xs q-px-sm q-ml-sm"
+          color="secondary"
+          dense
+          icon="delete"
+          no-caps
+          no-wrap
+          rounded
+          v-if="$q.screen.gt.xs"
+          @click="showDeletePopup"
+        >
+          <q-tooltip
+            :offset="[5, 5]"
+            content-class="bg-amber text-black shadow-4"
+          >{{ $t("dynamicTable.deleteToolTip", { item: name }) }}</q-tooltip>
+        </q-btn>
+      </div>
     </div>
     <q-card>
       <q-toolbar>
@@ -29,7 +97,7 @@
           <q-icon :name="icon"></q-icon>
           <span style="margin-left:5px">{{ $t(url + "." + url) }}</span>
         </q-toolbar-title>
-        <span class="text-h5 doc-token q-mt-xs" style="margin-left:26%">Urunler</span>
+        <span class="text-h5 doc-token q-mt-xs" style="margin-left:26%">Ürünler</span>
         <q-space />
         <q-btn
           flat
@@ -70,6 +138,7 @@
                   :nodes="nodeData"
                   node-key="id"
                   label-key="name"
+                  :filter="search"
                   selected-color="primary"
                   :selected.sync="selected"
                   default-expand-all
@@ -221,6 +290,7 @@ export default {
   data() {
     return {
       formData: {},
+      search: "",
       formTitle: this.$t("dynamicTable.addToolTip", { item: this.name }),
       splitterModel: 35,
       selected: null,
@@ -308,7 +378,7 @@ export default {
         relation: this.relation
       });
     },
-     resourceForm: function() {
+    resourceForm: function() {
       if (!this.resourceForm) {
         this.formData = Object.assign({});
         console.log("hideResourceForm : Form temizlendi...");
