@@ -2,19 +2,12 @@
   <q-page padding>
     <lis-item
       :items="categories"
-      :url="url"
-      :icon="icon"
       :name="name"
+      :url="url"
+      :relation="relation"
+      :icon="icon"
       @refresh="getItemList({ url })"
     />
-    <q-separator />
-    <q-separator />
-    <q-separator />
-    <q-separator />
-    <q-separator />
-    <q-separator />
-    <q-separator />
-    {{categories}}
   </q-page>
 </template>
 
@@ -30,6 +23,7 @@ export default {
   data() {
     return {
       url: this.$route.path.substring(1),
+      relation: 'products',
       name: this.$t("categories.category"),
       icon: "las la-dragon"
     };

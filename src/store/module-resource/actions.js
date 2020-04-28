@@ -25,6 +25,18 @@ export async function getItemList(context, query) {
     });
 }
 
+/** get item with relation  */
+export async function getItemWithRelation(context, query) {
+  return await resource.getItemWithRelation(query)
+  .then(res => {
+    if(res.data.length == 0) {
+       context.dispatch("showNotify", {status:900, data: {message: "Bu kategori boş"}});
+    }
+    context.commit("setItemList", { url: query.url + query.relation, data: res.data });
+    console.log('getItemWithRelation (Actions, Then)', res.data);
+  })
+}
+
 /** store item */
 export async function storeItem(context, resourceData) {
   context.dispatch("setBtnLoading", true);
@@ -92,13 +104,16 @@ export async function setFormFormProps(context, query) {
 /** notification */
 export function showNotify(context, res) {
   console.log('showNotify : ',res);
-  
   let type = "negative";
  if(res.status) {
     let a = res.status.toString().charAt(0);
   if (a == 2) {
     type = "positive";
+  }else if(a == 9) {
+    type = "warning"
   }
+ }else {
+    type = "info"
  }
   Notify.create({
     type: type,

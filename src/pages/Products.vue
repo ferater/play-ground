@@ -37,6 +37,13 @@ export default {
           sortable: true
         },
         {
+          name: "name",
+          align: "left",
+          label: "Ürün Adı",
+          field: "name",
+          sortable: true
+        },
+        {
           name: "self_life",
           align: "left",
           label: "Raf Ömrü",

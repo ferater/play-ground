@@ -9,6 +9,13 @@ export default {
         })
     },
 
+    getItemWithRelation(query) {
+        return axios({
+            method: 'get',
+            url: '/api/' + query.url + '/' + query.id + '/' + query.relation
+        })
+    },
+
 
     storeItem(resource) {
         return axios({

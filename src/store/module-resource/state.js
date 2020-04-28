@@ -3,6 +3,7 @@ export default function () {
     users: [],
     products: [],
     categories: [],
+    categoriesproducts: [],
     formProps: [],
     isLoading: false,
     resourceForm: false,

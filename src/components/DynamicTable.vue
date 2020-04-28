@@ -221,7 +221,7 @@
         </q-table>
       </q-slide-transition>
     </q-card>
-    <span v-if="isItemSelected">Selected : {{ isItemSelected }} {{ selected[0] }}</span>
+    <span v-if="isItemSelected">Selected : {{ isItemSelected }} <br /> {{ selected[0] }}</span>
     <!-- Resource Form -->
     <ValidationObserver v-slot="{ invalid }">
       <q-dialog position="top" v-model="resourceForm" @escape-key="hideResourceForm">
@@ -307,23 +307,17 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <select-box
-      clearable
-      :label="name"
-      :url="url"
-    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 import { ValidationObserver } from "vee-validate";
-import SelectBox from 'components/SelectBox'
 
 export default {
   name: "DynamicTable",
   components: {
-    ValidationObserver, SelectBox
+    ValidationObserver
   },
   props: {
     name: {
@@ -384,7 +378,7 @@ export default {
         this.formTitle = this.$t("dynamicTable.editToolTip", {
           item: this.name
         });
-        this.formData = Object.assign(this.formData, this.selected[0].data);
+        this.formData = Object.assign(this.formData, this.selected[0]);
       } else {
         this.formTitle = this.$t("dynamicTable.addToolTip", {
           item: this.name

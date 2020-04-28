@@ -8,7 +8,7 @@
         "type": "text",
         "label": "Kategori Adı",
         "icon": "people",
-        "style": { "width": "350px"}
+        "style": { "width": "350px", "margin-top": "50px"}
       }
     ]
   }
