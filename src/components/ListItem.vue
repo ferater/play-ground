@@ -17,7 +17,7 @@
         </template>
       </q-input>
       <q-space />
-      <div v-if="!isItemSelected && ! resourceForm" class="add">
+      <div v-if="! resourceForm" class="add">
         <q-btn
           v-if="$q.screen.gt.xs"
           :label="name"
@@ -35,59 +35,6 @@
             :offset="[5, 5]"
             content-class="bg-amber text-black shadow-4"
           >{{ $t("dynamicTable.addToolTip", { item: name }) }}</q-tooltip>
-        </q-btn>
-      </div>
-      <!-- Göster Düzenle  Sil Butonları -->
-      <div v-if="isItemSelected && ! resourceForm" class="actions">
-        <q-btn
-          :label="$t('dynamicTable.detail')"
-          class="q-py-xs q-px-sm"
-          color="brand"
-          dense
-          icon="remove_red_eye"
-          no-caps
-          no-wrap
-          rounded
-          v-if="$q.screen.gt.xs"
-        >
-          <q-tooltip
-            :offset="[5, 5]"
-            content-class="bg-amber text-black shadow-4"
-          >{{ $t("dynamicTable.detailToolTip", { item: name }) }}</q-tooltip>
-        </q-btn>
-        <q-btn
-          :label="$t('dynamicTable.edit')"
-          class="q-py-xs q-px-sm q-ml-sm"
-          color="secondary"
-          dense
-          icon="edit"
-          no-caps
-          no-wrap
-          rounded
-          v-if="$q.screen.gt.xs"
-          @click="showResourceForm"
-        >
-          <q-tooltip
-            :offset="[5, 5]"
-            content-class="bg-amber text-black shadow-4"
-          >{{ $t("dynamicTable.editToolTip", { item: name }) }}</q-tooltip>
-        </q-btn>
-        <q-btn
-          :label="$t('dynamicTable.delete')"
-          class="q-py-xs q-px-sm q-ml-sm"
-          color="secondary"
-          dense
-          icon="delete"
-          no-caps
-          no-wrap
-          rounded
-          v-if="$q.screen.gt.xs"
-          @click="showDeletePopup"
-        >
-          <q-tooltip
-            :offset="[5, 5]"
-            content-class="bg-amber text-black shadow-4"
-          >{{ $t("dynamicTable.deleteToolTip", { item: name }) }}</q-tooltip>
         </q-btn>
       </div>
     </div>
@@ -128,7 +75,7 @@
           @click="expanded = !expanded"
         />
       </q-toolbar>
-      <!-- Dinamik Tablo -->
+      <!-- Tree -->
       <q-slide-transition>
         <div v-show="expanded">
           <q-splitter v-model="splitterModel" style="width:60vw;height: 90vh">
@@ -138,11 +85,40 @@
                   :nodes="nodeData"
                   node-key="id"
                   label-key="name"
+                  accordion
                   :filter="search"
                   selected-color="primary"
                   :selected.sync="selected"
                   default-expand-all
-                />
+                >
+                  <template v-slot:default-header="prop">
+                    <div class="row items-center tree-item">
+                      <div>{{ prop.node.name }}</div>
+                      <q-space />
+                      <q-btn
+                        @click.prevent.stop
+                        size="12px"
+                        flat
+                        dense
+                        round
+                        icon="las la-angle-down"
+                        class="item-button"
+                      >
+                        <q-menu transition-show="flip-right" transition-hide="flip-left">
+                          <q-list style="min-width: 100px">
+                            <q-item clickable @click="showResourceForm(prop.node)">
+                              <q-item-section>{{$t('dynamicTable.edit')}}</q-item-section>
+                            </q-item>
+                            <q-separator />
+                            <q-item clickable @click="dd">
+                              <q-item-section>{{$t('dynamicTable.delete')}}</q-item-section>
+                            </q-item>
+                          </q-list>
+                        </q-menu>
+                      </q-btn>
+                    </div>
+                  </template>
+                </q-tree>
               </div>
             </template>
 
@@ -166,7 +142,7 @@
                         <div class="text-grey-8 q-gutter-xs">
                           <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
                           <q-btn class="gt-xs" size="12px" flat dense round icon="done" />-->
-                          <q-btn size="12px" flat dense round icon="more_vert">
+                          <q-btn size="12px" flat dense round icon="las la-chevron-circle-down">
                             <q-menu transition-show="flip-right" transition-hide="flip-left">
                               <q-list style="min-width: 100px">
                                 <q-item clickable>
@@ -325,6 +301,13 @@ export default {
         }
       });
       return b;
+    },
+    /** Seçilen İtem var mı diye bak */
+    isItemSelected() {
+      if (this.selected !== null) {
+        return true;
+      }
+      return false;
     }
   },
   methods: {
@@ -332,15 +315,17 @@ export default {
       setFormFormProps: "setFormFormProps",
       setResourceForm: "setResourceForm",
       storeItem: "storeItem",
+      updateItem: "updateItem",
+      deleteItem: "deleteItem",
       getItemWithRelation: "getItemWithRelation"
     }),
     /** ?tem Ekle/D?zenle Form i?erii?ini al ve a?, */
-    showResourceForm() {
-      if (this.isItemSelected) {
+    showResourceForm(node) {
+      if (node.id !== undefined) {
         this.formTitle = this.$t("dynamicTable.editToolTip", {
           item: this.name
         });
-        this.formData = Object.assign(this.formData, this.selected[0]);
+        this.formData = Object.assign(this.formData, node);
       } else {
         this.formTitle = this.$t("dynamicTable.addToolTip", {
           item: this.name
@@ -357,9 +342,11 @@ export default {
     /** Formu G?nder */
     handleSubmit() {
       if (this.formData.id !== undefined) {
-        this.updateItem({ url: this.url, data: this.formData }).then(() => {
-          this.selected = [];
-        });
+        console.log(this.formData);
+        this.updateItem({
+          url: this.url,
+          data: { id: this.formData.id, name: this.formData.name }
+        }).then(() => {});
       } else {
         this.storeItem({ url: this.url, data: this.formData });
       }
@@ -368,15 +355,28 @@ export default {
     /** Silme i?lemi onay g?ster */
     showDeletePopup() {
       this.confirm = true;
+    },
+
+    /** Seçilen İtemi Sil */
+    deleteSelectedItem() {
+      this.deleteItem({ url: this.url, id: this.selected[0].id }).then(res => {
+        this.selected = [];
+        this.search = "";
+        this.confirm = false;
+        console.log("deleteSelectedItem(DynamicTable, Then)");
+      });
     }
   },
   watch: {
     selected() {
-      this.getItemWithRelation({
-        url: this.url,
-        id: this.selected,
-        relation: this.relation
-      });
+      if (this.selected !== null) {
+        this.getItemWithRelation({
+          url: this.url,
+          id: this.selected,
+          relation: this.relation
+        });
+      }
+      console.log("item selected:", this.selected);
     },
     resourceForm: function() {
       if (!this.resourceForm) {
