@@ -1,5 +1,7 @@
 import auth from "../../services/service-auth";
-import { Cookies } from "quasar";
+import {
+  Cookies
+} from "quasar";
 
 /*** Laravel Sanctum'dan çerez çek */
 export async function getCookie() {
@@ -12,7 +14,9 @@ export function checkLoggedIn(context) {
   const user = localStorage.getItem("user");
   if (user) {
     console.log("checkLoggedIn: Girilmiş");
-    this.$router.push({ name: "home" });
+    this.$router.push({
+      name: "home"
+    });
   } else {
     console.log("girilmemiş");
   }
