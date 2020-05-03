@@ -3,17 +3,12 @@
   <div>
     <div class="actions-bar" :class="{'column': !$q.screen.gt.xs}">
       <!-- Arama -->
-      <q-input class="GPL__toolbar-input"
-               :style="!$q.screen.gt.xs ? 'width:80vw' : ''"
-               dense
-               rounded
-               standout="bg-grey-3"
-               placeholder="Ara"
+      <q-input class="GPL__toolbar-input" :style="!$q.screen.gt.xs ? 'width:80vw' : ''" dense rounded standout="bg-grey-3" placeholder="Ara"
                v-model="search">
         <template v-slot:append>
-                <q-icon name="search" v-if="search === ''" />
-                <q-icon @click="search = ''" class="cursor-pointer" name="clear" v-else />
-              </template>
+          <q-icon name="search" v-if="search === ''" />
+          <q-icon @click="search = ''" class="cursor-pointer" name="clear" v-else />
+        </template>
       </q-input>
       <q-space />
       <div v-if="! resourceForm" class="add">
@@ -40,20 +35,18 @@
         </q-toolbar-title>
         <span class="text-h5 doc-token q-mt-xs" style="margin-left:26%">Ürünler</span>
         <q-space />
-        <q-btn flat round dense
-               size="10px"
-               icon="las la-sync-alt"
-               :loading="isLoading"
-               @click="$emit('refresh')">
+        <q-btn flat round dense size="10px" icon="las la-sync-alt" :loading="isLoading" @click="$emit('refresh')">
           <!--  <template v-slot:loading>
-              <q-spinner-tail
-                color="black"
-                size="12px"
-              />
-                </template>-->
+                <q-spinner-tail
+                  color="black"
+                  size="12px"
+                />
+                  </template>-->
           <q-tooltip :offset="[5, 5]" content-class="bg-amber text-black shadow-4">{{ $t("dynamicTable.refreshToolTip") }}</q-tooltip>
         </q-btn>
-        <q-btn round flat dense
+        <q-btn round
+               flat
+               dense
                size="10px"
                :icon="expanded ? 'las la-angle-up' : 'las la-angle-down'"
                @click="expanded = !expanded" /> {{ sureToDelete }}
@@ -63,115 +56,76 @@
         <div v-show="expanded">
           <q-splitter v-model="splitterModel" style="width:60vw;height: 90vh">
             <template v-slot:before>
-                    <div class="q-pa-md">
-                      <q-tree
-                        :nodes="nodeData"
-                        node-key="id"
-                        label-key="name"
-                        accordion
-                        :filter="search"
-                        selected-color="primary"
-                        :selected.sync="selected"
-                        default-expand-all
-                      >
-                        <template v-slot:default-header="prop">
-                          <div class="row items-center tree-item">
-                            <div>{{ prop.node.name }}</div>
-                            <q-space />
-                            <div class="edit-form" :class="{open:editFormOpen}">dasd</div>
-                            <q-space />
-                            <q-btn
-                              @click.prevent.stop
-                              size="12px"
-                              flat
-                              dense
-                              round
-                              icon="las la-angle-down"
-                              class="item-button"
-                            >
-                              <q-menu
-                                transition-show="jump-down"
-                                transition-hide="jump-up"
-                                anchor="top right"
-                                @before-hide="cancelEditDelete"
-                              >
-                                <q-list style="max-width: 60px">
-                                  <q-item clickable @click="showResourceForm(prop.node)">
-                                    <q-item-section>
-                                      <q-icon name="las la-pen" size="25px" />
-                                    </q-item-section>
-                                  </q-item>
-                                  <q-separator />
-                                  <q-item clickable>
-                                    <q-item-section>
-                                      <q-icon
-                                        v-if="!sureToDelete"
-                                        name="las la-trash"
-                                        size="25px"
-                                        @click="sureToDelete = !sureToDelete"
-                                      />
-                                      <q-icon
-                                        v-else
-                                        name="las la-exclamation-circle"
-                                        color="red-5"
-                                        size="25px"
-                                        @click="deleteThis(prop.node.id)"
-                                        class="shake-horizontal"
-                                      />
-                                    </q-item-section>
-                                  </q-item>
-                                </q-list>
-                              </q-menu>
-                            </q-btn>
-                          </div>
-                        </template>
+              <div class="q-pa-md">
+                <q-tree :nodes="nodeData" node-key="id" label-key="name" accordion :filter="search" selected-color="primary" :selected.sync="selected" default-expand-all>
+                  <template v-slot:default-header="prop">
+                    <div class="row items-center tree-item">
+                      <div>{{ prop.node.name }}</div>
+                      <q-space />
+                      <div class="edit-form" :class="{open:editFormOpen}">dasd</div>
+                      <q-space />
+                      <q-btn @click.prevent.stop size="12px" flat dense round icon="las la-angle-down" class="item-button">
+                        <q-menu transition-show="jump-down" transition-hide="jump-up" anchor="top right" @before-hide="cancelEditDelete">
+                          <q-list style="max-width: 60px">
+                            <q-item clickable @click="showResourceForm(prop.node)">
+                              <q-item-section>
+                                <q-icon name="las la-pen" size="25px" />
+                              </q-item-section>
+                            </q-item>
+                            <q-separator />
+                            <q-item clickable>
+                              <q-item-section>
+                                <q-icon v-if="!sureToDelete" name="las la-trash" size="25px" @click="sureToDelete = !sureToDelete" />
+                                <q-icon v-else name="las la-exclamation-circle" color="red-5" size="25px" @click="deleteThis(prop.node.id)" class="shake-horizontal" />
+                              </q-item-section>
+                            </q-item>
+                          </q-list>
+                        </q-menu>
+                      </q-btn>
+                    </div>
+                  </template>
             </q-tree>
         </div>
         </template>
 
         <template v-slot:after>
-                    <q-tab-panels
-                      :value="selected"
-                      animated
-                      transition-prev="jump-up"
-                      transition-next="jump-up"
-                    >
-                      <q-tab-panel :name="selected" v-if="selected && relations.length >= 1">
-                        <q-list bordered>
-                          <q-item v-for="item in relations" :key="item.id">
-                            <q-item-section>
-                              <q-item-label lines="1">
-                                <span class="text-weight-medium">{{ item.name }}</span>
-                              </q-item-label>
-                              <q-item-label caption lines="1">{{ item.note | readMore(75, "...") }}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                              <div class="text-grey-8 q-gutter-xs">
-                                <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
-                                <q-btn class="gt-xs" size="12px" flat dense round icon="done" />-->
-                                <q-btn size="12px" flat dense round icon="las la-chevron-circle-down">
-                                  <q-menu transition-show="flip-right" transition-hide="flip-left">
-                                    <q-list style="min-width: 100px">
-                                      <q-item clickable>
-                                        <q-item-section>Having fun</q-item-section>
-                                      </q-item>
-                                      <q-item clickable>
-                                        <q-item-section>Crazy for transitions</q-item-section>
-                                      </q-item>
-                                      <q-separator />
-                                      <q-item clickable>
-                                        <q-item-section>Mind blown</q-item-section>
-                                      </q-item>
-                                    </q-list>
-                                  </q-menu>
-                                </q-btn>
-                              </div>
-                            </q-item-section>
-                          </q-item>
-                        </q-list>
-                      </q-tab-panel>
-                    </q-tab-panels>
-                  </template>
+              <q-tab-panels :value="selected" animated transition-prev="jump-up" transition-next="jump-up">
+                <q-tab-panel :name="selected" v-if="selected && relations.length >= 1">
+                  <q-list bordered>
+                    <q-item v-for="item in relations" :key="item.id">
+                      <q-item-section>
+                        <q-item-label lines="1">
+                          <span class="text-weight-medium">{{ item.name }}</span>
+                        </q-item-label>
+                        <q-item-label caption lines="1">{{ item.note | readMore(75, "...") }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side>
+                        <div class="text-grey-8 q-gutter-xs">
+                          <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
+                                  <q-btn class="gt-xs" size="12px" flat dense round icon="done" />-->
+                          <q-btn size="12px" flat dense round icon="las la-chevron-circle-down">
+                            <q-menu transition-show="flip-right" transition-hide="flip-left">
+                              <q-list style="min-width: 100px">
+                                <q-item clickable>
+                                  <q-item-section>Having fun</q-item-section>
+                                </q-item>
+                                <q-item clickable>
+                                  <q-item-section>Crazy for transitions</q-item-section>
+                                </q-item>
+                                <q-separator />
+                                <q-item clickable>
+                                  <q-item-section>Mind blown</q-item-section>
+                                </q-item>
+                              </q-list>
+                            </q-menu>
+                          </q-btn>
+                        </div>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-tab-panel>
+              </q-tab-panels>
+            </template>
         </q-splitter>
         <!-- <q-separator /> -->
   </div>
@@ -187,14 +141,8 @@
           </q-toolbar-title>
         </q-toolbar>
         <q-card-section>
-          <div v-for="field in formProps.fields"
-               :key="field.name"
-               :style="field.style"
-               class="column inline q-pl-md">
-            <ValidationProvider :rules="field.rules"
-                                :name="field.label"
-                                :bails="false"
-                                v-slot="{ errors, invalid, validated }">
+          <div v-for="field in formProps.fields" :key="field.name" :style="field.style" class="column inline q-pl-md">
+            <ValidationProvider :rules="field.rules" :name="field.label" :bails="false" v-slot="{ errors, invalid, validated }">
               <q-input :autofocus="field.autofocus"
                        :clearable="field.clearable"
                        :disable="btnLoading"
@@ -208,23 +156,16 @@
                        dense
                        square>
                 <!-- <template v-slot:prepend>
-                          <q-icon :name="field.icon" />
-                        </template>-->
+                            <q-icon :name="field.icon" />
+                          </template>-->
               </q-input>
             </ValidationProvider>
           </div>
         </q-card-section>
         <!--  <q-separator /> -->
         <q-card-actions align="right">
-          <q-btn :disable="btnLoading"
-                 color="primary"
-                 label="?ptal"
-                 @click.prevent="hideResourceForm" />
-          <q-btn :loading="btnLoading"
-                 color="primary"
-                 label="Kaydet"
-                 :disabled="invalid"
-                 @click.prevent="handleSubmit" />
+          <q-btn :disable="btnLoading" color="primary" label="?ptal" @click.prevent="hideResourceForm" />
+          <q-btn :loading="btnLoading" color="primary" label="Kaydet" :disabled="invalid" @click.prevent="handleSubmit" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -265,7 +206,9 @@
       return {
         formData: {},
         search: '',
-        formTitle: this.$t('dynamicTable.addToolTip', { item: this.name }),
+        formTitle: this.$t('dynamicTable.addToolTip', {
+          item: this.name
+        }),
         splitterModel: 35,
         selected: null,
         expanded: true,
@@ -334,7 +277,9 @@
             item: this.name
           })
         }
-        this.setFormFormProps({ jsonName: this.url })
+        this.setFormFormProps({
+          jsonName: this.url
+        })
       },
 
       /** ?tem Ekle/D?zenle Formunu Kapat ve Temizle */
@@ -348,10 +293,16 @@
           console.log(this.formData)
           this.updateItem({
             url: this.url,
-            data: { id: this.formData.id, name: this.formData.name }
+            data: {
+              id: this.formData.id,
+              name: this.formData.name
+            }
           }).then(() => {})
         } else {
-          this.storeItem({ url: this.url, data: this.formData })
+          this.storeItem({
+            url: this.url,
+            data: this.formData
+          })
         }
       },
 
@@ -362,7 +313,10 @@
 
       /** Seçilen İtemi Sil */
       deleteThis(id) {
-        this.deleteItem({ url: this.url, id: id }).then(res => {
+        this.deleteItem({
+          url: this.url,
+          id: id
+        }).then(res => {
           this.sureToDelete = false
           this.search = ''
           console.log('deleteSelectedItem(DynamicTable, Then)')
