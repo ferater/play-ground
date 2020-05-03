@@ -1,6 +1,5 @@
 import resource from "../../services/resource";
 import { Notify } from "quasar";
-
 /** İtemleri çek */
 export async function getItemList(context, query) {
   context.dispatch("setIsLoading", true);
