@@ -30,7 +30,7 @@
                @click="showResourceForm">
           <q-tooltip :offset="[5, 5]" content-class="bg-amber text-black shadow-4">{{ $t("dynamicTable.addToolTip", { item: name }) }}</q-tooltip>
         </q-btn>
-      </div>
+      </div>;
     </div>
     <q-card>
       <q-toolbar>
