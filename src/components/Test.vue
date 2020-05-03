@@ -1,23 +1,23 @@
 <template>
-  <div class="">
+  <div>
 
   </div>
+
+  
 </template>
+
 <script>
   export default {
-    name: '',
-    data() {
-      return {
-        stateKey: stateValue,
-      }
-    },
     methods: {
-      
+      name() {
+        function name(params) {
+          
+        }
+      }
     },
   }
 </script>
-<style lang="stylus" scoped>
-.
 
+<style lang="stylus" scoped>
 
 </style>
