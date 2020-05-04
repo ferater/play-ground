@@ -14,10 +14,8 @@ export async function getItemList(context, query) {
       });
       setTimeout(() => {
           context.dispatch("setIsLoading", false);
-        }, 300
-      ),
-
-      console.log("getItemList(Actions, Then): ", query.url, res.data);
+        }, 300)
+        console.log("getItemList(Actions, Then): ", query.url, res.data);
     })
     .catch(err => {
       setTimeout(() => {

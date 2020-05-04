@@ -1,6 +1,13 @@
 <template>
   <q-page padding>
-    <dynamic-table :columns="columns" :data="products" @refresh="getItemList({ url })" :icon="icon" :url="url" :name="name" />
+    <dynamic-table
+      :columns="columns"
+      :data="products"
+      @refresh="getItemList({ url })"
+      :icon="icon"
+      :url="url"
+      :name="name"
+    />
   </q-page>
 </template>
 
@@ -56,7 +63,7 @@ export default {
           label: "Notlar",
           field: "note",
           sortable: true
-        },
+        }
       ]
     };
   },
