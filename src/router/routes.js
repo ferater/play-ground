@@ -21,19 +21,19 @@ const routes = [
       {
         path: "",
         name: "dashboard",
-        meta: { label: "home", icon: "las la-atom" },
+        meta: { label: "home", icon: "la la-chrome" },
         component: () => import("pages/Index.vue")
       },
       {
         path: "/users",
         name: "users",
-        meta: { label: "users", icon: "people" },
+        meta: { label: "users", icon: "las la-user-tie" },
         component: () => import("pages/Users.vue")
       },
       {
         path: "/products",
         name: "products",
-        meta: { label: "products", icon: "donut_large" },
+        meta: { label: "products", icon: "las la-barcode" },
         component: () => import("pages/Products.vue")
       },
       {

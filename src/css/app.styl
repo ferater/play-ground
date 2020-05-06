@@ -2,15 +2,124 @@
 @font-face
   font-family 'Nunito', sans-serif
   src url('./fonts/nunito/Nunito-Regular.ttf')
+/** Main Layout */
+.GPL
+  &__page-container
+    padding-top 90px !important
+
+  &__toolbar
+    height 80px
+
+  &__toolbar-input
+    width 100px
+    margin-left 15px
+    transition width .5s ease
+
+  &__toolbar-input:focus-within
+    width 250px
+
+  &__drawer-item
+    line-height 24px
+    border-radius 0 24px 24px 0
+    margin-right 12px
+
+    .q-item__section--avatar
+      padding-left 12px
+
+      .q-icon
+        color #5f6368
+
+    .q-item__label:not(.q-item__label--caption)
+      color #3c4043
+      letter-spacing .01785714em
+      font-size .875rem
+      font-weight 500
+      line-height 1.25rem
+
+    &--storage
+      border-radius 0
+      margin-right 0
+      padding-top 24px
+      padding-bottom 24px
+
+  @media (min-width: 1024px)
+    &__page-container
+      padding-top 110px !important
+      padding-left 100px
+
+@media (max-width: 1023px)
+  .GPL
+    &__page-container
+      padding-top 110px !important
 
 .app-toolbar
   top 0
   right 0
   left 0
-  height 80px
+  height 90px
   box-shadow 0 1px 15px rgba(0, 0, 0, .04), 0 1px 6px rgba(0, 0, 0, .04)
   background-color #fff
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding auto 0
+
+/* ** Sidenav */
+.sidenav
+  position fixed
+  top 110px
+  left 0
+  width 105px
+  height 705px
+  border-radius 0 3px 3px 0
+  padding 10px 0
+  background-color #ffffff
+  box-shadow 0 8px 10px -10px rgba(0, 0, 0, .28), 0 4px 20px 0 rgba(0, 0, 0, .12), 0 7px 8px -5px rgba(76, 175, 80, .2)
+  transition all .1s ease
+
+  .list-unstyled
+    list-style none
+    margin-top 0
+
+    li
+      position relative
+      display list-item
+      transform translateX(-40%)
+      text-align left
+      width 105px
+
+      &.active a
+        color $primaryBtn
+
+        &:before
+          content ''
+          position absolute
+          left 2px
+          width 6px
+          height 85%
+          border-radius 3px
+          background-color $primaryBtn
+
+      &:hover a
+        color $primaryBtn
+
+      a
+        height 105px
+        text-decoration none
+        display flex
+        flex-direction column
+        justify-content center
+        align-items center
+        font-family Nunito, sans-serif
+        font-size 13px
+        font-style normal
+        font-weight 400
+        border-bottom 1px solid #f3f3f3
+        color #3a3a3a
+
+        i
+          font-size 32px
+          line-height 42px
 
 .q-dialog__inner > div
   overflow visible
@@ -68,68 +177,6 @@
 
 .q-dialog__backdrop
   background-color rgba(0, 0, 0, .8)
-
-.GPL
-  &__page-container
-    padding-top 90px !important
-
-  &__toolbar
-    height 80px
-
-  &__toolbar-input
-    width 100px
-    margin-left 15px
-    transition width .5s ease
-
-  &__toolbar-input:focus-within
-    width 250px
-
-  &__drawer-item
-    line-height 24px
-    border-radius 0 24px 24px 0
-    margin-right 12px
-
-    .q-item__section--avatar
-      padding-left 12px
-
-      .q-icon
-        color #5f6368
-
-    .q-item__label:not(.q-item__label--caption)
-      color #3c4043
-      letter-spacing .01785714em
-      font-size .875rem
-      font-weight 500
-      line-height 1.25rem
-
-    &--storage
-      border-radius 0
-      margin-right 0
-      padding-top 24px
-      padding-bottom 24px
-
-  // &__side-btn__icon {
-  // color #777
-  // }
-  //
-  // &__side-btn {
-  // &__label {
-  // font-size: 12px;
-  // line-height: 24px;
-  // letter-spacing: 0.01785714em;
-  // font-weight: 500;
-  // color #777
-  // }
-  // }
-  @media (min-width: 1024px)
-    &__page-container
-      padding-top 110px !important
-      padding-left 100px
-
-@media (max-width: 1023px)
-  .GPL
-    &__page-container
-      padding-top 110px !important
 
 /* *********** */
 .scale-up-hor-left
@@ -261,62 +308,7 @@
     -webkit-transform scaleY(1)
     transform scaleY(1)
 
-/* ** Sidenav */
-.sidenav
-  position fixed
-  top 110px
-  left 0
-  width 95px
-  height 705px
-  border-radius 0 5px 5px 0
-  padding 10px 0
-  background-color #ffffff
-  box-shadow 0 8px 10px -10px rgba(0, 0, 0, .28), 0 4px 20px 0 rgba(0, 0, 0, .12), 0 7px 8px -5px rgba(76, 175, 80, .2)
-  transition all .1s ease
 
-  .list-unstyled
-    list-style none
-    margin-top 0
-
-    li
-      position relative
-      display list-item
-      transform translateX(-40%)
-      text-align left
-      width 95px
-
-      &.active a
-        color $primaryBtn
-
-        &:before
-          content ''
-          position absolute
-          left 0
-          width 5px
-          height 70%
-          border-radius 10px
-          background-color $primaryBtn
-
-      &:hover a
-        color $primaryBtn
-
-      a
-        height 80px
-        text-decoration none
-        display flex
-        flex-direction column
-        justify-content center
-        align-items center
-        font-family Nunito, sans-serif
-        font-size 13px
-        font-style normal
-        font-weight 400
-        border-bottom 1px solid #f3f3f3
-        color #3a3a3a
-
-        i
-          font-size 32px
-          line-height 42px
 
 .actions-bar
   position relative

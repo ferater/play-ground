@@ -8,88 +8,18 @@
           class="q-mx-md"
           dense
           flat
-          icon="dashboard"
+          icon="las la-bars"
           round
         />
 
-        <!-- <q-toolbar-title v-if="$q.screen.gt.sm" shrink class="row items-center no-wrap">
-          <img src="https://cdn.quasar.dev/img/layout-gallery/logo-google.svg" />
-          <span class="q-ml-sm">Otomasyon</span>
-        </q-toolbar-title>-->
 
-        <!--        <q-input-->
-        <!--          class="GPL__toolbar-input"-->
-        <!--          dense-->
-        <!--          placeholder="Ara"-->
-        <!--          rounded-->
-        <!--          standout="bg-grey-3"-->
-        <!--          v-if="$q.screen.gt.xs"-->
-        <!--          v-model="search"-->
-        <!--        >-->
-        <!--          <template v-slot:append>-->
-        <!--            <q-icon name="search" v-if="search === ''"/>-->
-        <!--            <q-icon @click="search = ''" class="cursor-pointer" name="clear" v-else/>-->
-        <!--          </template>-->
-        <!--        </q-input>-->
-
-        <!-- <q-btn
-            v-if="$q.screen.gt.xs"
-            flat
-            dense
-            no-wrap
-            color="primary"
-            icon="add"
-            no-caps
-            label="Create"
-            class="q-ml-sm q-px-md"
-          >
-            <q-menu anchor="top right" self="top right">
-              <q-list class="text-grey-8" style="min-width: 100px">
-                <q-item aria-hidden="true">
-                  <q-item-section
-                    class="text-uppercase text-grey-7"
-                    style="font-size: 0.7rem"
-                  >Create New</q-item-section>
-                </q-item>
-                <q-item
-                  v-for="menu in createMenu"
-                  :key="menu.text"
-                  clickable
-                  v-close-popup
-                  aria-hidden="true"
-                >
-                  <q-item-section avatar>
-                    <q-icon :name="menu.icon" />
-                  </q-item-section>
-                  <q-item-section>{{ menu.text }}</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-        </q-btn>-->
-        <!--        <div class="q-ml-md scale-up-ver-center">-->
-        <!--          <q-btn-->
-        <!--            @click="alert"-->
-        <!--            class="q-ml-sm q-px-xs"-->
-        <!--            color="white"-->
-        <!--            dense-->
-        <!--            icon="add_circle"-->
-        <!--            size="14px"-->
-        <!--            text-color="secondary"-->
-        <!--          >-->
-        <!--            <q-tooltip-->
-        <!--              :offset="[5, 5]"-->
-        <!--              content-class="bg-amber text-black shadow-4"-->
-        <!--            >Yeni ... Oluştur-->
-        <!--            </q-tooltip>-->
-        <!--          </q-btn>-->
-        <!--        </div>-->
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn color="text-grey-7" dense flat icon="apps" round>
+          <q-btn color="text-grey-7" dense flat icon="dashboard" round>
             <q-tooltip>Google Apps</q-tooltip>
           </q-btn>
-          <q-btn color="grey-8" dense flat icon="notifications" round>
+          <q-btn color="grey-8" dense flat icon="lar la-comment-alt" round>
             <q-badge color="red" floating text-color="white">2</q-badge>
             <q-tooltip>Notifications</q-tooltip>
           </q-btn>

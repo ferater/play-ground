@@ -13,19 +13,12 @@ export async function getItemList(context, query) {
         data: res.data
       });
       setTimeout(() => {
-          context.dispatch("setIsLoading", false);
-        }, 300)
-        console.log("getItemList(Actions, Then): ", query.url, res.data);
+        context.dispatch("setIsLoading", false);
+      }, 300)
+      console.log("getItemList(Actions, Then): ", query.url, res.data);
     })
     .catch(err => {
-      setTimeout(() => {
-        context.dispatch("showNotify", {
-          res: err,
-          message: err.message
-        });
-        context.dispatch("setIsLoading", false);
-      }, 5000);
-      console.log("getItemList(Actions, Catch)", err);
+      context.dispatch('getCatch', err)
     });
 }
 
@@ -47,6 +40,9 @@ export async function getItemWithRelation(context, query) {
       });
       console.log('getItemWithRelation (Actions, Then)', res.data);
     })
+    .catch(err => {
+      context.dispatch('getCatch', err)
+    });
 }
 
 /** store item */
@@ -118,7 +114,9 @@ export async function setFormFormProps(context, query) {
   );
 }
 
-/** notification */
+/**
+notification
+*/
 export function showNotify(context, res) {
   console.log('showNotify : ', res);
   let type = "negative";
@@ -139,6 +137,28 @@ export function showNotify(context, res) {
     html: true,
     message: res.data.message
   });
+}
+
+
+export function getCatch(context, err) {
+  if (!err.response) {
+    setTimeout(() => {
+      context.dispatch("showNotify", {
+        status: 500,
+        data: {
+          message: "Bağlantı hatası, bağlantınızı kontrol edin..."
+        }
+      });
+      context.dispatch("setIsLoading", false);
+      console.log('getItemList(Actions, Catch: Network Error');
+    }, 3000)
+  } else {
+    setTimeout(() => {
+      context.dispatch("showNotify", err.response);
+      context.dispatch("setIsLoading", false);
+    }, 1000);
+    console.log("getItemList(Actions, Catch)", err.response);
+  }
 }
 
 /** set isLoading */
