@@ -52,7 +52,7 @@ module.exports = function(ctx) {
     build: {
       vueRouterMode: "hash", // available values: 'hash', 'history'
       env: {
-        BASE_URL: JSON.stringify("http://automation.test:8000")
+        BASE_URL: JSON.stringify("http://automation.test")
       },
       // devtool: 'source-map',
       // rtl: false, // https://quasar.dev/options/rtl-support

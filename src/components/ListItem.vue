@@ -1,133 +1,90 @@
 <template>
-  <div>
-    <div class="actions-bar" :class="{ column: !$q.screen.gt.xs }">
-      <!-- Arama -->
-      <q-input
-        class="GPL__toolbar-input"
-        :style="!$q.screen.gt.xs ? 'width:80vw' : ''"
-        dense
-        rounded
-        standout="bg-grey-3"
-        placeholder="Ara"
-        v-model="search"
-      >
-        <template v-slot:append>
-          <q-icon name="search" v-if="search === ''" />
-          <q-icon
-            @click="search = ''"
-            class="cursor-pointer"
-            name="clear"
-            v-else
-          />
-        </template>
-      </q-input>
-      <q-space />
-      <div v-if="!resourceForm" class="add">
-        <q-btn
-          v-if="$q.screen.gt.xs"
-          :label="name"
-          :loading="btnLoading"
-          dense
-          no-caps
-          no-wrap
-          rounded
-          class="q-py-xs q-px-sm"
-          color="brand"
-          icon="add_circle"
-          @click="showResourceForm"
-        >
-          <q-tooltip
-            :offset="[5, 5]"
-            content-class="bg-amber text-black shadow-4"
-            >{{ $t("dynamicTable.addToolTip", { item: name }) }}</q-tooltip
-          >
-        </q-btn>
-      </div>
+<div>
+  <div class="actions-bar" :class="{ column: !$q.screen.gt.xs }">
+    <!-- Arama -->
+    <q-input class="GPL__toolbar-input" :style="!$q.screen.gt.xs ? 'width:80vw' : ''" dense rounded standout="bg-grey-3" placeholder="Ara" v-model="search">
+      <template v-slot:append>
+        <q-icon name="search" v-if="search === ''" />
+        <q-icon @click="search = ''" class="cursor-pointer" name="clear" v-else />
+      </template>
+    </q-input>
+    <q-space />
+    <div v-if="!resourceForm" class="add">
+      <q-btn v-if="$q.screen.gt.xs" :label="name" :loading="btnLoading" dense no-caps no-wrap rounded class="q-py-xs q-px-sm" color="brand" icon="add_circle" @click="showResourceForm">
+        <q-tooltip :offset="[5, 5]" content-class="bg-amber text-black shadow-4">{{ $t("dynamicTable.addToolTip", { item: name }) }}</q-tooltip>
+      </q-btn>
     </div>
-    <q-card style="background:#f7f7f7">
-      <q-toolbar>
-        <q-toolbar-title class="card-table-title">
-          <q-icon :name="icon"></q-icon>
-          <span style="margin-left:5px">{{ $t(url + "." + url) }}</span>
-        </q-toolbar-title>
-        <span class="text-h5 doc-token q-mt-xs" style="margin-left:26%"
-          >Ürünler</span
-        >
-        <q-space />
-        <q-btn
-          flat
-          round
-          dense
-          size="10px"
-          icon="las la-sync-alt"
-          :loading="isLoading"
-          @click="$emit('refresh')"
-        >
-          <!--  <template v-slot:loading>
+  </div>
+  <q-card style="background:#f7f7f7">
+    <q-toolbar>
+      <q-toolbar-title class="card-table-title">
+        <q-icon :name="icon"></q-icon>
+        <span style="margin-left:5px">{{ $t(url + "." + url) }}</span>
+      </q-toolbar-title>
+      <span class="text-h5 doc-token q-mt-xs" style="margin-left:26%">Ürünler</span>
+      <q-space />
+      <q-btn flat round dense size="10px" icon="las la-sync-alt" :loading="isLoading" @click="$emit('refresh')">
+        <!--  <template v-slot:loading>
                         <q-spinner-tail
                           color="black"
                           size="12px"
                         />
                   </template>-->
-          <q-tooltip
-            :offset="[5, 5]"
-            content-class="bg-amber text-black shadow-4"
-            >{{ $t("dynamicTable.refreshToolTip") }}</q-tooltip
-          >
-        </q-btn>
-        <q-btn
-          round
-          flat
-          dense
-          size="10px"
-          :icon="expanded ? 'las la-angle-up' : 'las la-angle-down'"
-          @click="expanded = !expanded"
-        />
-      </q-toolbar>
-      <!-- Tree -->
-      <q-slide-transition>
-        <div v-show="expanded">
-          <q-splitter v-model="splitterModel" style="width:60vw;height: 90vh">
-            <template v-slot:before>
-              <div class="q-pa-md">
-                <q-tree
-                  :nodes="nodeData"
-                  node-key="id"
-                  label-key="name"
-                  accordion
-                  :filter="search"
-                  selected-color="primary"
-                  :selected.sync="selected"
-                  default-expand-all
-                >
+        <q-tooltip :offset="[5, 5]" content-class="bg-amber text-black shadow-4">{{ $t("dynamicTable.refreshToolTip") }}</q-tooltip>
+      </q-btn>
+      <q-btn round flat dense size="10px" :icon="expanded ? 'las la-angle-up' : 'las la-angle-down'" @click="expanded = !expanded" />
+    </q-toolbar>
+    <!-- Tree -->
+    <q-slide-transition>
+      <div v-show="expanded">
+        <q-splitter v-model="splitterModel" style="width:60vw;height: 90vh">
+          <template v-slot:before>
+            <q-slide-transition>
+              <div class="q-pa-md" v-show="edit">
+
+                <ValidationObserver v-slot="{ invalid }">
+                  <q-card class="resource-form" :style="formProps.style">
+                    <q-card-section>
+                      <div v-for="field in formProps.fields" :key="field.name" :style="field.style" class="column inline q-pl-md">
+                        <ValidationProvider :rules="field.rules" :name="field.label" :bails="false" v-slot="{ errors, invalid, validated }">
+                          <q-input :autofocus="field.autofocus" :clearable="field.clearable" :disable="btnLoading" :label="field.label" :type="field.type" :autogrow="field.autogrow" :error="
+                                  (invalid && validated) ||
+                                    (formErrors.length >= 1 &&
+                                      Object.keys(formErrors[0]).includes(field.name))
+                                " :error-message="
+                                  formErrors.length >= 1 &&
+                                  Object.keys(formErrors[0]).includes(field.name)
+                                    ? formErrors[0][field.name][0]
+                                    : errors[0]
+                                " v-model="formData[field.name]" dense square>
+                            <!-- <template v-slot:prepend>
+                                                  <q-icon :name="field.icon" />
+                                        </template>-->
+                          </q-input>
+                        </ValidationProvider>
+                      </div>
+                    </q-card-section>
+                    <!--  <q-separator /> -->
+                    <q-card-actions align="right">
+                      <q-btn :disable="btnLoading" color="primary" label="?ptal" @click.prevent="hideResourceForm" />
+                      <q-btn :loading="btnLoading" color="primary" label="Kaydet" :disabled="invalid" @click.prevent="handleSubmit" />
+                    </q-card-actions>
+                  </q-card>
+                </ValidationObserver>
+
+              </div>
+            </q-slide-transition>
+            <q-slide-transition>
+              <div class="q-pa-md tree" v-show="!edit">
+                <q-tree :nodes="nodeData" node-key="id" label-key="name" accordion :filter="search" selected-color="primary" :selected.sync="selected" default-expand-all>
                   <template v-slot:default-header="prop">
                     <div class="row items-center tree-item">
                       <div>{{ prop.node.name }}</div>
                       <q-space />
-                      <!-- <div class="edit-form" :class="{ open: editFormOpen }">
-                        dasd
-                      </div> -->
-                      <q-space />
-                      <q-btn
-                        @click.prevent.stop
-                        size="12px"
-                        flat
-                        dense
-                        round
-                        icon="las la-angle-down"
-                        class="item-button"
-                      >
-                        <q-menu
-                          transition-show="jump-down"
-                          transition-hide="jump-up"
-                          anchor="bottom middle"
-                          @before-hide="cancelEditDelete"
-                        >
+                      <q-btn @click.prevent.stop size="12px" flat dense round icon="las la-angle-down" class="item-button">
+                        <q-menu transition-show="jump-down" transition-hide="jump-up" anchor="bottom middle" @before-hide="cancelEditDelete">
                           <q-list style="max-width: 60px">
-                            <q-item
-                              clickable
-                              @click="showResourceForm(prop.node)"
-                            >
+                            <q-item clickable @click="showResourceForm(prop.node)">
                               <q-item-section>
                                 <q-icon name="las la-pen" size="25px" />
                               </q-item-section>
@@ -135,32 +92,16 @@
                             <q-separator />
                             <q-item clickable v-if="!prop.node.children">
                               <q-item-section>
-                                <q-icon
-                                  v-if="!sureToDelete"
-                                  name="las la-trash"
-                                  size="25px"
-                                  @click="sureToDelete = !sureToDelete"
-                                />
-                                <q-icon
-                                  v-else
-                                  name="las la-exclamation-circle"
-                                  color="red-5"
-                                  size="25px"
-                                  @click="deleteThis(prop.node.id)"
-                                  class="shake-horizontal"
-                                />
+                                <q-icon v-if="!sureToDelete" name="las la-trash" size="25px" @click="sureToDelete = !sureToDelete" />
+                                <q-icon v-else name="las la-exclamation-circle" color="red-5" size="25px" @click="deleteThis(prop.node.id)" class="shake-horizontal" />
                               </q-item-section>
                             </q-item>
                             <q-item disable v-else>
                               <q-item-section>
-                                <q-icon name="las la-trash" size="25px"
-                                  ><q-tooltip
-                                    :offset="[15, 15]"
-                                    content-class="bg-amber text-black shadow-4"
-                                    >Bu kategori, alt kategorilere sahip
-                                    olduğundan silinemez!</q-tooltip
-                                  ></q-icon
-                                >
+                                <q-icon name="las la-trash" size="25px">
+                                  <q-tooltip :offset="[15, 15]" content-class="bg-amber text-black shadow-4">Bu kategori, alt kategorilere sahip
+                                    olduğundan silinemez!</q-tooltip>
+                                </q-icon>
                               </q-item-section>
                             </q-item>
                           </q-list>
@@ -170,154 +111,67 @@
                   </template>
                 </q-tree>
               </div>
-            </template>
+            </q-slide-transition>
+          </template>
 
-            <template v-slot:after>
-              <q-tab-panels
-                :value="selected"
-                animated
-                transition-prev="jump-up"
-                transition-next="jump-up"
-              >
-                <q-tab-panel
-                  :name="selected"
-                  v-if="selected && relations.length >= 1"
-                >
-                  <q-list bordered>
-                    <q-item v-for="item in relations" :key="item.id">
-                      <q-item-section>
-                        <q-item-label lines="1">
-                          <span class="text-weight-medium">{{
+          <template v-slot:after>
+            <q-tab-panels :value="selected" animated transition-prev="jump-up" transition-next="jump-up">
+              <q-tab-panel :name="selected" v-if="selected && relations.length >= 1">
+                <q-list bordered>
+                  <q-item v-for="item in relations" :key="item.id">
+                    <q-item-section>
+                      <q-item-label lines="1">
+                        <span class="text-weight-medium">{{
                             item.name
                           }}</span>
-                        </q-item-label>
-                        <q-item-label caption lines="1">{{
+                      </q-item-label>
+                      <q-item-label caption lines="1">{{
                           item.note | readMore(75, "...")
                         }}</q-item-label>
-                      </q-item-section>
-                      <q-item-section side>
-                        <div class="text-grey-8 q-gutter-xs">
-                          <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
+                    </q-item-section>
+                    <q-item-section side>
+                      <div class="text-grey-8 q-gutter-xs">
+                        <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
                                   <q-btn class="gt-xs" size="12px" flat dense round icon="done" />-->
-                          <q-btn
-                            size="12px"
-                            flat
-                            dense
-                            round
-                            icon="las la-chevron-circle-down"
-                          >
-                            <q-menu
-                              transition-show="flip-right"
-                              transition-hide="flip-left"
-                            >
-                              <q-list style="min-width: 100px">
-                                <q-item clickable>
-                                  <q-item-section>Having fun</q-item-section>
-                                </q-item>
-                                <q-item clickable>
-                                  <q-item-section
-                                    >Crazy for transitions</q-item-section
-                                  >
-                                </q-item>
-                                <q-separator />
-                                <q-item clickable>
-                                  <q-item-section>Mind blown</q-item-section>
-                                </q-item>
-                              </q-list>
-                            </q-menu>
-                          </q-btn>
-                        </div>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-tab-panel>
-              </q-tab-panels>
-            </template>
-          </q-splitter>
-          <!-- <q-separator /> -->
-        </div>
-      </q-slide-transition>
-    </q-card>
-    <!-- Resource Form -->
-    <ValidationObserver v-slot="{ invalid }">
-      <q-dialog
-        position="top"
-        v-model="resourceForm"
-        @escape-key="hideResourceForm"
-      >
-        <q-card class="resource-form" :style="formProps.style">
-          <q-toolbar>
-            <q-toolbar-title class="card-form-title">{{
-              formTitle
-            }}</q-toolbar-title>
-          </q-toolbar>
-          <q-card-section>
-            <div
-              v-for="field in formProps.fields"
-              :key="field.name"
-              :style="field.style"
-              class="column inline q-pl-md"
-            >
-              <ValidationProvider
-                :rules="field.rules"
-                :name="field.label"
-                :bails="false"
-                v-slot="{ errors, invalid, validated }"
-              >
-                <q-input
-                  :autofocus="field.autofocus"
-                  :clearable="field.clearable"
-                  :disable="btnLoading"
-                  :label="field.label"
-                  :type="field.type"
-                  :autogrow="field.autogrow"
-                  :error="
-                    (invalid && validated) ||
-                      (formErrors.length >= 1 &&
-                        Object.keys(formErrors[0]).includes(field.name))
-                  "
-                  :error-message="
-                    formErrors.length >= 1 &&
-                    Object.keys(formErrors[0]).includes(field.name)
-                      ? formErrors[0][field.name][0]
-                      : errors[0]
-                  "
-                  v-model="formData[field.name]"
-                  dense
-                  square
-                >
-                  <!-- <template v-slot:prepend>
-                                    <q-icon :name="field.icon" />
-                          </template>-->
-                </q-input>
-              </ValidationProvider>
-            </div>
-          </q-card-section>
-          <!--  <q-separator /> -->
-          <q-card-actions align="right">
-            <q-btn
-              :disable="btnLoading"
-              color="primary"
-              label="?ptal"
-              @click.prevent="hideResourceForm"
-            />
-            <q-btn
-              :loading="btnLoading"
-              color="primary"
-              label="Kaydet"
-              :disabled="invalid"
-              @click.prevent="handleSubmit"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-    </ValidationObserver>
-  </div>
+                        <q-btn size="12px" flat dense round icon="las la-chevron-circle-down">
+                          <q-menu transition-show="flip-right" transition-hide="flip-left">
+                            <q-list style="min-width: 100px">
+                              <q-item clickable>
+                                <q-item-section>Having fun</q-item-section>
+                              </q-item>
+                              <q-item clickable>
+                                <q-item-section>Crazy for transitions</q-item-section>
+                              </q-item>
+                              <q-separator />
+                              <q-item clickable>
+                                <q-item-section>Mind blown</q-item-section>
+                              </q-item>
+                            </q-list>
+                          </q-menu>
+                        </q-btn>
+                      </div>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-tab-panel>
+            </q-tab-panels>
+          </template>
+        </q-splitter>
+        <!-- <q-separator /> -->
+      </div>
+    </q-slide-transition>
+  </q-card>
+</div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import { ValidationObserver } from "vee-validate";
+import {
+  mapActions,
+  mapState
+} from "vuex";
+import {
+  ValidationObserver
+} from "vee-validate";
 export default {
   name: "TreeList",
   components: {
@@ -345,6 +199,7 @@ export default {
   data() {
     return {
       formData: {},
+      edit: false,
       search: "",
       formTitle: this.$t("dynamicTable.addToolTip", {
         item: this.name
@@ -396,7 +251,7 @@ export default {
   methods: {
     ...mapActions("resource", {
       setFormFormProps: "setFormFormProps",
-      setResourceForm: "setResourceForm",
+      setFormFormProps: "setFormFormProps",
       storeItem: "storeItem",
       updateItem: "updateItem",
       deleteItem: "deleteItem",
@@ -408,19 +263,11 @@ export default {
     },
     /** ?tem Ekle/D?zenle Form i?erii?ini al ve a?, */
     showResourceForm(node) {
-      if (node.id !== undefined) {
-        this.formTitle = this.$t("dynamicTable.editToolTip", {
-          item: this.name
-        });
-        this.formData = Object.assign(this.formData, node);
-      } else {
-        this.formTitle = this.$t("dynamicTable.addToolTip", {
-          item: this.name
-        });
-      }
+      this.formData = Object.assign(this.formData, node);
       this.setFormFormProps({
         jsonName: this.url
       });
+      this.edit = true;
     },
 
     /** ?tem Ekle/D?zenle Formunu Kapat ve Temizle */
@@ -438,12 +285,15 @@ export default {
             id: this.formData.id,
             name: this.formData.name
           }
-        }).then(() => {});
+        }).then(() => {
+          this.edit = false;
+        });
       } else {
         this.storeItem({
           url: this.url,
           data: this.formData
         });
+        this.edit = false;
       }
     },
 
