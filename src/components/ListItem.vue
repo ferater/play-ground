@@ -39,79 +39,44 @@
       <div v-show="expanded">
         <q-splitter v-model="splitterModel" style="width:60vw;height: 90vh">
           <template v-slot:before>
-            <q-slide-transition>
-              <div class="q-pa-md" v-show="edit">
 
-                <ValidationObserver v-slot="{ invalid }">
-                  <q-card class="resource-form" :style="formProps.style">
-                    <q-card-section>
-                      <div v-for="field in formProps.fields" :key="field.name" :style="field.style" class="column inline q-pl-md">
-                        <ValidationProvider :rules="field.rules" :name="field.label" :bails="false" v-slot="{ errors, invalid, validated }">
-                          <q-input :autofocus="field.autofocus" :clearable="field.clearable" :disable="btnLoading" :label="field.label" :type="field.type" :autogrow="field.autogrow" :error="
-                                  (invalid && validated) ||
-                                    (formErrors.length >= 1 &&
-                                      Object.keys(formErrors[0]).includes(field.name))
-                                " :error-message="
-                                  formErrors.length >= 1 &&
-                                  Object.keys(formErrors[0]).includes(field.name)
-                                    ? formErrors[0][field.name][0]
-                                    : errors[0]
-                                " v-model="formData[field.name]" dense square>
-                            <!-- <template v-slot:prepend>
-                                                  <q-icon :name="field.icon" />
-                                        </template>-->
-                          </q-input>
-                        </ValidationProvider>
-                      </div>
-                    </q-card-section>
-                    <!--  <q-separator /> -->
-                    <q-card-actions align="right">
-                      <q-btn :disable="btnLoading" color="primary" label="?ptal" @click.prevent="hideResourceForm" />
-                      <q-btn :loading="btnLoading" color="primary" label="Kaydet" :disabled="invalid" @click.prevent="handleSubmit" />
-                    </q-card-actions>
-                  </q-card>
-                </ValidationObserver>
 
-              </div>
-            </q-slide-transition>
-            <q-slide-transition>
-              <div class="q-pa-md tree" v-show="!edit">
-                <q-tree :nodes="nodeData" node-key="id" label-key="name" accordion :filter="search" selected-color="primary" :selected.sync="selected" default-expand-all>
-                  <template v-slot:default-header="prop">
-                    <div class="row items-center tree-item">
-                      <div>{{ prop.node.name }}</div>
-                      <q-space />
-                      <q-btn @click.prevent.stop size="12px" flat dense round icon="las la-angle-down" class="item-button">
-                        <q-menu transition-show="jump-down" transition-hide="jump-up" anchor="bottom middle" @before-hide="cancelEditDelete">
-                          <q-list style="max-width: 60px">
-                            <q-item clickable @click="showResourceForm(prop.node)">
-                              <q-item-section>
-                                <q-icon name="las la-pen" size="25px" />
-                              </q-item-section>
-                            </q-item>
-                            <q-separator />
-                            <q-item clickable v-if="!prop.node.children">
-                              <q-item-section>
-                                <q-icon v-if="!sureToDelete" name="las la-trash" size="25px" @click="sureToDelete = !sureToDelete" />
-                                <q-icon v-else name="las la-exclamation-circle" color="red-5" size="25px" @click="deleteThis(prop.node.id)" class="shake-horizontal" />
-                              </q-item-section>
-                            </q-item>
-                            <q-item disable v-else>
-                              <q-item-section>
-                                <q-icon name="las la-trash" size="25px">
-                                  <q-tooltip :offset="[15, 15]" content-class="bg-amber text-black shadow-4">Bu kategori, alt kategorilere sahip
-                                    olduğundan silinemez!</q-tooltip>
-                                </q-icon>
-                              </q-item-section>
-                            </q-item>
-                          </q-list>
-                        </q-menu>
-                      </q-btn>
-                    </div>
-                  </template>
-                </q-tree>
-              </div>
-            </q-slide-transition>
+            <div class="q-pa-md tree">
+              <q-tree :nodes="nodeData" node-key="id" label-key="name" accordion :filter="search" selected-color="primary" :selected.sync="selected" default-expand-all>
+                <template v-slot:default-header="prop">
+                  <div :id="prop.node.name" class="row items-center tree-item">
+                    <div :id="prop.node.id">{{ prop.node.name }}</div>
+                    <q-space />
+                    <q-btn @click.prevent.stop size="12px" flat dense round icon="las la-angle-down" class="item-button">
+                      <q-menu transition-show="jump-down" transition-hide="jump-up" anchor="bottom middle" @before-hide="cancelEditDelete">
+                        <q-list style="max-width: 60px">
+                          <q-item clickable @click="showResourceForm(prop.node.name)">
+                            <q-item-section>
+                              <q-icon name="las la-pen" size="25px" />
+                            </q-item-section>
+                          </q-item>
+                          <q-separator />
+                          <q-item clickable v-if="!prop.node.children">
+                            <q-item-section>
+                              <q-icon v-if="!sureToDelete" name="las la-trash" size="25px" @click="sureToDelete = !sureToDelete" />
+                              <q-icon v-else name="las la-exclamation-circle" color="red-5" size="25px" @click="deleteThis(prop.node.id)" class="shake-horizontal" />
+                            </q-item-section>
+                          </q-item>
+                          <q-item disable v-else>
+                            <q-item-section>
+                              <q-icon name="las la-trash" size="25px">
+                                <q-tooltip :offset="[15, 15]" content-class="bg-amber text-black shadow-4">Bu kategori, alt kategorilere sahip
+                                  olduğundan silinemez!</q-tooltip>
+                              </q-icon>
+                            </q-item-section>
+                          </q-item>
+                        </q-list>
+                      </q-menu>
+                    </q-btn>
+                  </div>
+                </template>
+              </q-tree>
+            </div>
           </template>
 
           <template v-slot:after>
@@ -175,7 +140,7 @@ import {
 export default {
   name: "TreeList",
   components: {
-    ValidationObserver
+    // ValidationObserver
   },
   props: {
     name: {
@@ -262,13 +227,20 @@ export default {
       alert("test");
     },
     /** ?tem Ekle/D?zenle Form i?erii?ini al ve a?, */
-    showResourceForm(node) {
-      this.formData = Object.assign(this.formData, node);
-      this.setFormFormProps({
-        jsonName: this.url
-      });
-      this.edit = true;
+    showResourceForm(id) {
+      let formDiv = document.getElementById(id);
+      let formLabel = document.getElementById(id);
+      formLabel.classList.add('hide-label');
+      formDiv.classList.toggle('edit-list-item');
+      this.edit=true
     },
+    // showResourceForm(node) {
+    //   this.formData = Object.assign(this.formData, node);
+    //   this.setFormFormProps({
+    //     jsonName: this.url
+    //   });
+    //   this.edit = true;
+    // },
 
     /** ?tem Ekle/D?zenle Formunu Kapat ve Temizle */
     hideResourceForm() {
@@ -335,3 +307,10 @@ export default {
   created() {}
 };
 </script>
+
+<style lang="stylus">
+  .edit-list-item
+    height: 200px
+  .hide-label
+    visibility: hidden;
+</style>
