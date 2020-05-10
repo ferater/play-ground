@@ -12,7 +12,6 @@
           round
         />
 
-
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
@@ -27,35 +26,35 @@
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
-            <q-tooltip>Account</q-tooltip>
+            <q-tooltip>{{authUser.name}}</q-tooltip>
             <q-menu>
-        <div class="row no-wrap q-pa-md">
-          <div class="column">
-            <div class="text-h6 q-mb-md">Settings</div>
-            <q-toggle  label="Use Mobile Data" />
-            <q-toggle  label="Bluetooth" />
-          </div>
+              <div class="row no-wrap q-pa-md">
+                <div class="column">
+                  <div class="text-h6 q-mb-md">Settings</div>
+                  <!-- <q-toggle label="Use Mobile Data" />
+                  <q-toggle label="Bluetooth" /> -->
+                </div>
 
-          <q-separator vertical inset class="q-mx-lg" />
+                <q-separator vertical inset class="q-mx-lg" />
 
-          <div class="column items-center">
-            <q-avatar size="72px">
-              <img src="https://cdn.quasar.dev/img/avatar4.jpg">
-            </q-avatar>
+                <div class="column items-center">
+                  <q-avatar size="72px">
+                    <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+                  </q-avatar>
 
-            <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+                  <div class="text-subtitle1 q-mt-md q-mb-xs">{{authUser.email}}</div>
 
-            <q-btn
-              color="primary"
-              label="Logout"
-              push
-              size="sm"
-              @click="logOut"
-              v-close-popup
-            />
-          </div>
-        </div>
-      </q-menu>
+                  <q-btn
+                    color="primary"
+                    label="Logout"
+                    push
+                    size="sm"
+                    @click="logOut"
+                    v-close-popup
+                  />
+                </div>
+              </div>
+            </q-menu>
           </q-btn>
         </div>
       </q-toolbar>
@@ -79,7 +78,12 @@
         </q-toolbar>
 
         <q-list padding>
-          <q-item :key="link.text" class="GPL__drawer-item" clickable v-for="link in links1">
+          <q-item
+            :key="link.text"
+            class="GPL__drawer-item"
+            clickable
+            v-for="link in links1"
+          >
             <q-item-section avatar>
               <q-icon :name="link.icon" />
             </q-item-section>
@@ -90,7 +94,12 @@
 
           <q-separator class="q-my-md" />
 
-          <q-item :key="link.text" class="GPL__drawer-item" clickable v-for="link in links2">
+          <q-item
+            :key="link.text"
+            class="GPL__drawer-item"
+            clickable
+            v-for="link in links2"
+          >
             <q-item-section avatar>
               <q-icon :name="link.icon" />
             </q-item-section>
@@ -101,7 +110,12 @@
 
           <q-separator class="q-my-md" />
 
-          <q-item :key="link.text" class="GPL__drawer-item" clickable v-for="link in links3">
+          <q-item
+            :key="link.text"
+            class="GPL__drawer-item"
+            clickable
+            v-for="link in links3"
+          >
             <q-item-section avatar>
               <q-icon :name="link.icon" />
             </q-item-section>
@@ -127,19 +141,20 @@
     </q-drawer>
 
     <q-page-container class="GPL__page-container">
+
       <router-view />
 
       <!--  Sidenav    -->
       <div class="sidenav" v-if="$q.screen.gt.sm && !leftDrawerOpen">
         <ul class="list-unstyled">
           <li
-            :class="{active: $route.path == route.path}"
+            :class="{ active: $route.path == route.path }"
             :key="route.path"
             v-for="route in routes[1].children"
           >
-            <router-link :to="{name: route.name}" tag="a">
+            <router-link :to="{ name: route.name }" tag="a">
               <q-icon :name="route.meta.icon" />
-              {{ $t('routes.' + route.meta.label) }}
+              {{ $t("routes." + route.meta.label) }}
             </router-link>
           </li>
         </ul>
@@ -271,9 +286,13 @@ export default {
   },
   methods: {
     ...mapActions("auth", {
-      getAuthUser: "getAuthUser",
       logOut: "logOut"
     })
-  }
+  },
+  computed: {
+    authUser() {
+      return this.$store.state.auth.authUser
+    },
+  },
 };
 </script>

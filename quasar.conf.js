@@ -6,7 +6,7 @@ module.exports = function(ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ["i18n", "axios", "filters", "vee-validate"],
+    boot: ["i18n", "axios", "filters", "vee-validate", "check-login"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.styl"],
@@ -82,7 +82,7 @@ module.exports = function(ctx) {
     devServer: {
       https: false,
       host: "front.automation.test",
-      port: 80,
+      port: 8080,
       open: true // opens browser window automatically
     },
 

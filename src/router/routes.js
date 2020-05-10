@@ -1,25 +1,19 @@
 const routes = [
   {
     path: "/",
-    component: () => import("layouts/MainLayout.vue"),
-    children: [
-      {
-        path: "",
-        name: "home",
-        meta: { icon: "people" },
-        component: () => import("pages/Index.vue")
-      }
-    ]
+    name: "login",
+    component: () => import("pages/Login.vue"),
   },
   /** Sayfa içi menu rotaları */
   /*************************************************** */
   /*************************************************** */
   {
-    path: "/",
+    path: "/dashboard",
+    name: "dashboard",
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
-        path: "",
+        path: "/dashboard",
         name: "dashboard",
         meta: { label: "home", icon: "la la-chrome" },
         component: () => import("pages/Index.vue")
@@ -41,21 +35,9 @@ const routes = [
         name: "categories",
         meta: { label: "categories", icon: "las la-dragon" },
         component: () => import("pages/Categories.vue")
-      },
-      {
-        path: "/login",
-        name: "login",
-        meta: { label: "login", icon: "las la-sign-in-alt" },
-        component: () => import("pages/Login.vue")
       }
     ]
-  },
-  /** Tekil sayfa rotaları */
-  /*************************************************** */
-  {
-    path: "/login",
-    component: () => import("pages/Login.vue"),
-  },
+  }
 ];
 
 // Always leave this as last one

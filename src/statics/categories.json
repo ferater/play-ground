@@ -9,8 +9,8 @@
         "label": "Kategori Adı",
         "icon": "people",
         "autofocus": true,
+        "rules": "required",
         "style": { "width": "350px", "margin-top": "50px"}
       }
     ]
   }
-  

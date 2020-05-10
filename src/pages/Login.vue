@@ -5,6 +5,7 @@
         class="window-height window-width row justify-center items-center"
         style="background: linear-gradient(#8274C5, #5A4A9F);"
       >
+      {{ $route.from}}
         <div class="column q-pa-lg">
           <div class="row">
             <q-form @submit="handleSubmit">
@@ -127,7 +128,6 @@ export default {
   methods: {
     ...mapActions("auth", {
       loginOrRegister: "loginOrRegister",
-      checkLoggedIn: "checkLoggedIn"
     }),
     changeForm() {
       if (this.url == "/login") {
@@ -159,9 +159,6 @@ export default {
       }
       return false;
     }
-  },
-  created() {
-    this.checkLoggedIn();
   }
 };
 </script>

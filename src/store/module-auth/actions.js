@@ -10,17 +10,23 @@ export async function getCookie() {
   });
 }
 
-export function checkLoggedIn(context) {
-  const user = localStorage.getItem("user");
-  if (user) {
-    console.log("checkLoggedIn: Girilmiş");
-    this.$router.push({
-      name: "home"
-    });
+
+
+export function checkIsLoggedIn(context) {
+  if (checkXsrfCookie() && checkSessionCookie()) {
+    context.dispatch('setAuthUser');
+    context.commit('setIsLoggedIn', true);
   } else {
-    console.log("girilmemiş");
+    console.log('checkIsLoggedIn :',this.$router.currentRoute.path);
+    context.commit('setIsLoggedIn', false);
+    if (this.$router.currentRoute.path != '/') {
+      context.dispatch('logOut');
+    }
   }
 }
+
+
+
 
 /** Giriş yap */
 export function loginOrRegister(context, resource) {
@@ -28,67 +34,67 @@ export function loginOrRegister(context, resource) {
     return auth
       .loginOrRegister(resource)
       .then(res => {
-        context.dispatch("getAuthUser").then(() => {
-          context.dispatch("setLocalStorageCookie");
+        localStorage.setItem('user', JSON.stringify(res.data))
+        context.commit('setIsLoggedIn', true);
+        this.$router.push({
+          name: "dashboard"
         });
         console.log("loginOrRegister (Actions, Then):", res);
       })
       .catch(err => {
-        console.log("loginOrRegister (Actions, Catch): ", err);
+        console.log("loginOrRegister (Actions, Catch): ", err.response);
       });
   });
 }
 
-export async function logOut(context) {
-  return await auth.logOut().then(res => {
-    context.dispatch("removeLocalStorageCookie");
-    context.dispatch("removeLocalStorageUser");
-    console.log("logOut (Actions, Then) :", res);
-  });
-}
 
-/** Giriş yapan Kullanıcı bilgisini çek */
-export async function getAuthUser(context) {
-  return auth
-    .getAuthUser()
-    .then(res => {
-      context.dispatch("setLocalStorageUser", res.data);
-      console.log("getAuthUser (Actions, Then) :", res.data);
-    })
-    .then(err => {
-      console.log("getAuthUser (Actions, Catch) :", res.data);
-    });
-}
-
-/** çerezi localsotrage'a yaz */
-export function setLocalStorageCookie() {
-  const cookieName = "larautomation_session";
-  let localStorageCookie = localStorage.setItem(
-    cookieName,
-    Cookies.get(cookieName)
-  );
-  console.log("setLocalStorageCookie: ", Cookies.get(cookieName));
-}
-
-/** çerezi localStorage'dan sil */
-export function removeLocalStorageCookie() {
-  localStorage.removeItem("larautomation_session");
-  console.log("removeLocalStorageCookie : Çerez Localstorage'dan silindi");
-}
-
-/** Giriş yapan kullanıcıyı localstoage'a yaz */
-export function setLocalStorageUser(context, user) {
-  let localStorageUser = localStorage.getItem("user");
-  if (localStorageUser) {
-    console.log("setLocalStorageUser (if): ", localStorageUser);
-  } else {
-    localStorageUser = localStorage.setItem("user", JSON.stringify(user));
-    console.log("setLocalStorageUser (else): ", localStorageUser);
+export async function setAuthUser(context) {
+  let authUser = localStorage.getItem('user');
+  if (authUser) {
+    context.commit('setAuthUser', JSON.parse(authUser));
   }
 }
 
-/** Giriş yapan Kullanıcı bilgisini localstorage'dan sil */
-export function removeLocalStorageUser() {
-  localStorage.removeItem("user");
-  console.log("removeLocalStorageUser: Kullanıcı Localestorage'dan silindi");
+
+
+
+export async function logOut(context) {
+  return await auth.logOut().then(res => {
+    console.log("logOut (Actions, Then) :", res);
+    localStorage.clear();
+    this.$router.push({
+      name: "login"
+    });
+  }).catch((err) => {
+    Cookies.remove('session_lifetime')
+  })
+}
+
+
+
+
+/** XSRF-TOKEN kontrol et*/
+function checkXsrfCookie() {
+  const cookie = Cookies.get('XSRF-TOKEN');
+  if (cookie) {
+    console.log('checkXsrfCookie var');
+    return true;
+  } else {
+    console.log('checkXsrfCookie yok');
+    return false;
+  }
+}
+
+
+
+/** session_lifetime kontrol et*/
+function checkSessionCookie() {
+  const cookie = Cookies.get('session_lifetime');
+  if (cookie) {
+    console.log('session_lifetime var');
+    return true;
+  } else {
+    console.log('session_lifetime yok');
+    return false;
+  }
 }
