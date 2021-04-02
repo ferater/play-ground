@@ -26,3 +26,4 @@ quasar build
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 a2345
 6
+7
